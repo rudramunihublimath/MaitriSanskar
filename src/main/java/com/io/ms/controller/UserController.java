@@ -1,12 +1,15 @@
 package com.io.ms.controller;
 
-import com.io.ms.entities.UserReq;
-import com.io.ms.entities.UserLoginReq;
+import com.io.ms.entities.login.ChangePassword;
+import com.io.ms.entities.login.UserReq;
+import com.io.ms.entities.login.UserLoginReq;
 import com.io.ms.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -28,6 +31,16 @@ public class UserController {
     @PostMapping(value = "/MBP/LoginUser")
     public ResponseEntity<?> loginUser(@RequestBody UserLoginReq payload)  {
         return loginService.loginUser(payload);
+    }
+
+    @GetMapping("/MBP/forgotPWD/sendMail/")
+    public ResponseEntity<?> forgotPassword(@RequestParam String email) {
+        return loginService.forgotPassword(email);
+    }
+
+    @PutMapping(value = "/MBP/secured/ChangePassword/")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePassword payload)  {
+        return loginService.changePassword(payload);
     }
 
 }

@@ -1,10 +1,8 @@
-package com.io.ms.entities;
+package com.io.ms.entities.login;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.io.Serializable;
 
 
 @Entity

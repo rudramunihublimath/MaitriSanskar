@@ -2,22 +2,19 @@ package com.io.ms.service;
 
 import com.io.ms.dao.UserDetailsRepository;
 import com.io.ms.dao.UserRepository;
-import com.io.ms.entities.UserLoginResponse;
-import com.io.ms.entities.UserReq;
-import com.io.ms.entities.UserDetails;
-import com.io.ms.entities.UserLoginReq;
+import com.io.ms.entities.login.*;
 import com.io.ms.utility.AESEncryption;
 import com.io.ms.utility.GlobalUtility;
-import org.springframework.beans.BeanUtils;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class UserService {
@@ -25,6 +22,9 @@ public class UserService {
     UserRepository userRepo;
     @Autowired
     UserDetailsRepository detailsRepo;
+
+    @Autowired
+    private JavaMailSender sender;
 
     public UserService(UserRepository userRepo, UserDetailsRepository detailsRepo) {
         this.userRepo = userRepo;
@@ -113,5 +113,41 @@ public class UserService {
         resp.setMbpmanagerCode(userDetails.getMbpmanagerCode());
         resp.setNameofTeam(userDetails.getNameofTeam());
         return new ResponseEntity<>(resp , HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> changePassword(ChangePassword payload) {
+        UserReq user = userRepo.findByEmail(payload.getEmail());
+        if (user == null){
+            return new ResponseEntity<String>("Please enter correct mail id!!", HttpStatus.OK);
+        }
+
+        if(AESEncryption.decrypt(user.getPassword()).equals(payload.getOldPWD())) {
+            user.setPassword(AESEncryption.encrypt(payload.getNewPWD()));
+            userRepo.save(user);
+        }
+        else{
+            return new ResponseEntity<String>("Your Current Password is not correct ", HttpStatus.OK);
+        }
+
+        return new ResponseEntity<String>( "Your Password is changed ", HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> forgotPassword(String email) {
+        UserReq user = userRepo.findByEmail(email);
+        if (user == null){
+            return new ResponseEntity<String>("Please enter correct mail id!!", HttpStatus.OK);
+        }
+        MimeMessage message = sender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+            helper.setTo(email);
+            helper.setText("\n\n"+AESEncryption.decrypt(user.getPassword()));
+            helper.setSubject("Email from MaitriSanskar.com");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return new ResponseEntity<String>("Error while sending mail", HttpStatus.OK);
+        }
+        sender.send(message);
+        return new ResponseEntity<String>( "Please check your mail for PWD : "+user.getEmail(), HttpStatus.OK);
     }
 }

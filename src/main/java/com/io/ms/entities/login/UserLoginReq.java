@@ -1,4 +1,4 @@
-package com.io.ms.entities;
+package com.io.ms.entities.login;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
