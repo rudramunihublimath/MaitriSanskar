@@ -30,6 +30,8 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -73,7 +75,7 @@ public class UserService {
         var savedUser =userRepo.save(reg);
         var jwtToken = jwtService.generateToken(reg);
         saveUserToken(savedUser, jwtToken);
-        return ResponseEntity.ok("Your account has been created. ");
+        return ResponseEntity.ok("Your account has been created");
     }
 
     public ResponseEntity<?> loginUser(UserLoginReq payload) {

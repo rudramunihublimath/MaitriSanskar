@@ -7,11 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/demo-controller")
 @Hidden
 public class DemoController {
 
-  @GetMapping
+  @GetMapping("/Secured/MBP/demo-controller")
   public ResponseEntity<String> sayHello() {
     return ResponseEntity.ok("Hello from secured endpoint");
   }

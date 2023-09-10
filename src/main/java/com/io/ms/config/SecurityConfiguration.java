@@ -3,6 +3,7 @@ package com.io.ms.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,12 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
-/*import static org.springframework.http.HttpMethod.*;
-import static com.io.ms.entities.login.Permission.ADMIN_CREATE;
-import static com.io.ms.entities.login.Permission.ADMIN_DELETE;
-import static com.io.ms.entities.login.Permission.ADMIN_READ;
-import static com.io.ms.entities.login.Permission.ADMIN_UPDATE;
-import static com.io.ms.entities.login.Role.ADMIN; */
 
 @Configuration
 @EnableWebSecurity
@@ -36,8 +31,12 @@ public class SecurityConfiguration {
         .disable()
         .authorizeHttpRequests()
         .requestMatchers(AUTH_WHITELIST).permitAll()
+            .requestMatchers("/Secured/MBP/**").authenticated()
+            //.requestMatchers(HttpMethod.POST, "/api/customers", "/api/storages").authenticated()
+            //.requestMatchers(HttpMethod.PUT, "/api/customers/{id}", "/api/storages/{id}").authenticated()
+            //.requestMatchers(HttpMethod.DELETE, "/api/users/{id}", "/api/storages/{id}", "/api/customers/{id}").authenticated()
         .anyRequest()
-        .authenticated()
+        .denyAll()
         .and()
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -52,7 +51,7 @@ public class SecurityConfiguration {
   }
 
   private static final String[] AUTH_WHITELIST = {
-          "/api/v1/auth/**",
+          "/MBP/Login/**",
           "/v3/api-docs/**",
           "/v3/api-docs.yaml",
           "/swagger-ui/**",

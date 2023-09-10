@@ -16,7 +16,6 @@ import java.io.IOException;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/v1/auth")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
@@ -26,22 +25,22 @@ public class UserController {
         this.loginService = loginService;
     }
 
-    @PostMapping(value = "/MBP/RegisterUser")
+    @PostMapping(value = "/MBP/Login/RegisterUser")
     public ResponseEntity<?> registerUser(@RequestBody User payload)  {
         return loginService.registerUser(payload);
     }
 
-    @PostMapping(value = "/MBP/LoginUser")
+    @PostMapping(value = "/MBP/Login/LoginUser")
     public ResponseEntity<?> loginUser(@RequestBody UserLoginReq payload)  {
         return loginService.loginUser(payload);
     }
 
-    @GetMapping("/MBP/forgotPWD")
+    @GetMapping("/MBP/Login/forgotPWD")
     public ResponseEntity<?> forgotPassword(@RequestParam String email) {
         return loginService.forgotPassword(email);
     }
 
-    @PutMapping(value = "/MBP/ChangePassword")
+    @PutMapping(value = "/Secured/MBP/ChangePassword")
     public ResponseEntity<?> changePassword(@RequestBody ChangePassword payload)  {
         return loginService.changePassword(payload);
     }
