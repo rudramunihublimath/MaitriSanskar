@@ -1,12 +1,12 @@
 package com.io.ms.dao;
 
-
-import com.io.ms.entities.login.UserReq;
+import com.io.ms.entities.login.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UserRepository extends JpaRepository<UserReq, Long> {
-    UserReq findByEmail(String email);
+import java.util.Optional;
 
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
+
+    boolean existsByEmail(String email);
 }

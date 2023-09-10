@@ -1,0 +1,149 @@
+package com.io.ms.entities.login;
+
+import com.io.ms.token.Token;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import java.util.Collection;
+import java.util.List;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "users")
+public class User implements UserDetails {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @Column(name = "code", unique = true, nullable = false, length = 25)
+  private String code;
+
+  @Column(name = "firstname", nullable = false, length = 50)
+  private String firstname;
+
+  @Column(name = "lastname", length = 50)
+  private String lastname;
+
+  @Enumerated(EnumType.STRING)
+  @Column(length = 10)
+  private Gender gender;
+  @Email
+  @Column(name = "email", nullable = false, length = 30)
+  private String email;
+
+  @Column(name = "password", nullable = false, length = 60)
+  private String password;
+
+  @Column(name = "contactnum1", nullable = false, length = 15)
+  private String contactNum1;
+
+  @Column(name = "contactnum2", nullable = false, length = 15)
+  private String contactNum2;
+
+  @Column(name = "country", nullable = false, length = 15)
+  private String country;
+
+  @Column(name = "state", nullable = false, length = 20)
+  private String state;
+
+  @Column(name = "city", nullable = false, length = 20)
+  private String city;
+
+  @Temporal(TemporalType.DATE)
+  @Column(name = "createdat")
+  private String createdAt;
+
+  @Temporal(TemporalType.DATE)
+  @Column(name = "updatedat")
+  private String updatedAt;
+
+  @Column(name = "linkdinid", length = 100)
+  private String linkdinID;
+
+  @Column(name = "facebookid", length = 100)
+  private String facebookID;
+
+  @Column(name = "instaid", length = 100)
+  private String instaID;
+
+  @Column(name = "pannum", nullable = false, length = 15)
+  private String pannum;
+
+  @Column(name = "address1", nullable = false, length = 60)
+  private String address1;
+
+  @Column(name = "address2", length = 60)
+  private String address2;
+
+  @Column(name = "pincode", nullable = false,length = 12)
+  private String pincode;
+
+  @Column(name = "profileactive", length = 3)
+  private String profileActive;
+
+  @Column(name = "mbpmanagerCode", length = 21)
+  private String mbpmanagerCode;
+
+  @Column(name = "mbpmanagerName", length = 60)
+  private String mbpmanagerName;
+
+  @Column(name = "nameofTeam", length = 50)
+  private String nameofTeam;
+
+  @Column(name = "cityAllocated", length = 50)
+  private String citiesAllocated;
+
+  @Enumerated(EnumType.STRING)
+  private Role role;
+
+  @OneToMany(mappedBy = "user")
+  private List<Token> tokens;
+
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return List.of(new SimpleGrantedAuthority(role.name()));
+  }
+
+  @Override
+  public String getPassword() {
+    return password;
+  }
+
+  @Override
+  public String getUsername() {
+    return email;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
+
+
+}

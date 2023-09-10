@@ -1,6 +1,5 @@
 package com.io.ms.utility;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 
@@ -21,4 +20,5 @@ public class GlobalUtility {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         return formatter;
     }
+
 }

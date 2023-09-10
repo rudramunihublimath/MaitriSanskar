@@ -1,7 +1,6 @@
 1) Swagger URL :
-   http://localhost:8080/swagger-ui/index.html
+   http://localhost:8081/swagger-ui/index.html#/
 2) Table :
-   SELECT * FROM mbp.users;
-   SELECT * FROM mbp.user_details;
+   SELECT * FROM mbp.users;   
 3) Sample JSON for Registration : added in folder  
-4) 
+4)  http://localhost:8081/api/v1/demo-controller : to test Auth service with JWT 
