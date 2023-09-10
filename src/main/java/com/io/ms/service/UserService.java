@@ -43,7 +43,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
     private static Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepo;
     private final JwtService jwtService;
@@ -57,8 +56,6 @@ public class UserService {
     private StateMasterRepo stateRepo;
     @Autowired
     private CityMasterRepo cityRepo;
-
-    //private JavaMailSender sender;
 
     @Autowired
     private EmailUtils emailUtils;
@@ -103,7 +100,6 @@ public class UserService {
         if (userOptional.isEmpty()) {
             return new ResponseEntity<String>("User not found. Please register !! ", HttpStatus.NOT_FOUND);
         }
-
         User user = userOptional.get();
 
         //validate password
@@ -149,18 +145,6 @@ public class UserService {
             return new ResponseEntity<String>("Please enter correct mail id!! ", HttpStatus.NOT_FOUND);
         }
         User user = userOptional.get();
-        /*
-        MimeMessage message = sender.createMimeMessage();
-        try {
-            MimeMessageHelper helper = new MimeMessageHelper(message);
-            helper.setTo(email);
-            helper.setText("Login with this details : \n\n"+AESEncryption.decrypt(user.getPassword()));
-            helper.setSubject("Email from MaitriSanskar.com");
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            return new ResponseEntity<String>("Error while sending mail ", HttpStatus.OK);
-        }
-        sender.send(message); */
 
         String emailBody = readForgotPwdEmailBody(user);
         String subject = appProps.getMessages().get(AppConstants.RECOVER_PAZZWD_EMAIL_SUB);
@@ -219,8 +203,6 @@ public class UserService {
         resp.setMbpmanagerName(user.getMbpmanagerName());
         resp.setNameofTeam(user.getNameofTeam());
         resp.setCitiesAllocated(user.getCitiesAllocated());
-        //resp.setAuthorities(user.getAuthorities());
-
         return resp;
     }
 
@@ -322,5 +304,82 @@ public class UserService {
             throw new UserAppException(e.getMessage());
         }
         return mailBody;
+    }
+
+    public ResponseEntity<?> updateUserDetailsSelf(User payload) {
+        Optional<User> userOptional = userRepo.findByEmail(payload.getEmail());
+        if (userOptional.isEmpty()) {
+            return new ResponseEntity<String>("User not found. Please register !! ", HttpStatus.NOT_FOUND);
+        }
+        User reg = userOptional.get();
+        //reg.setCode(generateUserCode(payload.getCity()) );
+        reg.setFirstname(payload.getFirstname());
+        reg.setLastname(payload.getLastname());
+        //reg.setGender(payload.getGender());
+        //reg.setEmail(payload.getEmail());
+        //reg.setPassword(AESEncryption.encrypt(payload.getPassword()));
+        reg.setContactNum1(payload.getContactNum1());
+        reg.setContactNum2(payload.getContactNum2());
+        reg.setCountry(payload.getCountry());
+        reg.setState(payload.getState());
+        reg.setCity(payload.getCity());
+        reg.setDob(payload.getDob());
+        //reg.setCreatedDate(GlobalUtility.generateDateFormat1()); Automatically taken care
+        //reg.setRole(Role.USER);
+        reg.setLinkdinID(payload.getLinkdinID());
+        reg.setFacebookID(payload.getFacebookID());
+        reg.setInstaID(payload.getInstaID());
+        reg.setPannum(payload.getPannum());
+        reg.setAddress1(payload.getAddress1());
+        reg.setAddress2(payload.getAddress2());
+        reg.setPincode(payload.getPincode());
+        //reg.setProfileActive("Yes");
+        userRepo.save(reg);
+        return ResponseEntity.ok("Your account has been updated");
+    }
+
+
+    public ResponseEntity<?> updateUserNOTActive(String code, String email, String updatedbyCode) {
+        Optional<User> userOptional2 = userRepo.findByCode(updatedbyCode);
+        if (userOptional2.isEmpty()) {
+            return new ResponseEntity<String>("User not found with given details !! "+updatedbyCode, HttpStatus.NOT_FOUND);
+        }
+        User user2 = userOptional2.get();
+
+        Optional<User> userOptional = userRepo.findByCodeAndEmail(code,email);
+        if (userOptional.isEmpty()) {
+            return new ResponseEntity<String>("User not found with given details !! "+code, HttpStatus.NOT_FOUND);
+        }
+        User user = userOptional.get();
+
+        if( user2.getNameofTeam() !=null && user2.getNameofTeam() !=null && user2.getNameofTeam().equals(user.getNameofTeam())){
+            return new ResponseEntity<String>("Not Allowed to deactivate Profile ", HttpStatus.NOT_FOUND);
+        }
+
+        user.setProfileActive("No");
+        user.setProfileNOTActiveUpdatedby(updatedbyCode);
+        userRepo.save(user);
+        return ResponseEntity.ok("Profile is deactivated");
+    }
+
+
+    public ResponseEntity<?> search_UserByCode(String code) {
+        return ResponseEntity.ok("##");
+    }
+
+    public ResponseEntity<?> search_UserByEmail(String email) {
+        return ResponseEntity.ok("##");
+    }
+
+    public ResponseEntity<?> search_UserByMobile(String contactNum) {
+        return ResponseEntity.ok("##");
+    }
+
+    public ResponseEntity<?> search_UserReportingMe() {
+        return ResponseEntity.ok("##");
+    }
+
+    public ResponseEntity<?> search_UsersDonthaveManagers() {
+        return ResponseEntity.ok("##");
     }
 }

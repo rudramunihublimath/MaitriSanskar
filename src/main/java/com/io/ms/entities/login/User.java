@@ -101,6 +101,9 @@ public class User implements UserDetails {
   @Column(name = "profileactive", length = 3)
   private String profileActive;
 
+  @Column(name = "profileNOTActiveUpdatedby", length = 3)
+  private String profileNOTActiveUpdatedby;
+
   @Column(name = "mbpmanagerCode", length = 21)
   private String mbpmanagerCode;
 

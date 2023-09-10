@@ -32,6 +32,7 @@ public class UserResponse {
     private String address2;
     private String pincode;
     private String profileActive;
+    private String profileNOTActiveUpdatedby;
     private String jwtToken;
     private String refreshToken;
     private String mbpmanagerCode;
