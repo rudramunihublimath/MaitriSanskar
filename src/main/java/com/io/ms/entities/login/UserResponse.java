@@ -3,6 +3,7 @@ package com.io.ms.entities.login;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 @Data
@@ -19,8 +20,9 @@ public class UserResponse {
     private String country;
     private String state;
     private String city;
-    private String createdAt;
-    private String updatedAt;
+    private LocalDate dob;
+    private LocalDate createdDate;
+    private LocalDate updatedDate;
     private String role;
     private String linkdinID;
     private String facebookID;

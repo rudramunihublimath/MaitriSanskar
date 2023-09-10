@@ -1,5 +1,6 @@
 package com.io.ms.entities.login;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.io.ms.token.Token;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -7,9 +8,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -59,13 +64,18 @@ public class User implements UserDetails {
   @Column(name = "city", nullable = false, length = 20)
   private String city;
 
+  @JsonFormat(pattern = "yyyy-MM-dd")
   @Temporal(TemporalType.DATE)
-  @Column(name = "createdat")
-  private String createdAt;
+  @Column(name = "dob")
+  private LocalDate dob;
 
-  @Temporal(TemporalType.DATE)
-  @Column(name = "updatedat")
-  private String updatedAt;
+  @CreationTimestamp
+  @Column(name = "createdAt",updatable = false)
+  private LocalDate createdDate;
+
+  @UpdateTimestamp
+  @Column(name = "updatedAt",insertable = false)
+  private LocalDate updatedDate;
 
   @Column(name = "linkdinid", length = 100)
   private String linkdinID;

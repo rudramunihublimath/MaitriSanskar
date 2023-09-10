@@ -2,47 +2,66 @@ package com.io.ms.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.io.ms.config.JwtService;
-import com.io.ms.dao.UserRepository;
+import com.io.ms.constant.AppConstants;
+import com.io.ms.dao.login.CityMasterRepo;
+import com.io.ms.dao.login.CountryMasterRepo;
+import com.io.ms.dao.login.StateMasterRepo;
+import com.io.ms.dao.login.UserRepository;
 import com.io.ms.entities.login.*;
+import com.io.ms.exception.UserAppException;
+import com.io.ms.properties.AppProperties;
 import com.io.ms.token.Token;
 import com.io.ms.token.TokenRepository;
 import com.io.ms.token.TokenType;
 import com.io.ms.utility.AESEncryption;
+import com.io.ms.utility.EmailUtils;
 import com.io.ms.utility.GlobalUtility;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
+    private static Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepo;
     private final JwtService jwtService;
     private final TokenRepository tokenRepository;
+    @Autowired
+    private AppProperties appProps;
 
     @Autowired
-    private JavaMailSender sender;
+    private CountryMasterRepo countryRepo;
+    @Autowired
+    private StateMasterRepo stateRepo;
+    @Autowired
+    private CityMasterRepo cityRepo;
+
+    //private JavaMailSender sender;
+
+    @Autowired
+    private EmailUtils emailUtils;
 
     public ResponseEntity<?> registerUser(User payload) {
         // validated if emailID already present
@@ -62,7 +81,8 @@ public class UserService {
         reg.setCountry(payload.getCountry());
         reg.setState(payload.getState());
         reg.setCity(payload.getCity());
-        reg.setCreatedAt(currentDateTime());
+        reg.setDob(payload.getDob());
+        //reg.setCreatedDate(GlobalUtility.generateDateFormat1()); Automatically taken care
         reg.setRole(Role.USER);
         reg.setLinkdinID(payload.getLinkdinID());
         reg.setFacebookID(payload.getFacebookID());
@@ -123,13 +143,13 @@ public class UserService {
         return ResponseEntity.ok("Your Password is changed ");
     }
 
-    public ResponseEntity<?> forgotPassword(String email) {
+    public ResponseEntity<?> forgotPassword(String email) throws UserAppException {
         Optional<User> userOptional = userRepo.findByEmail(email);
         if (userOptional.isEmpty()) {
             return new ResponseEntity<String>("Please enter correct mail id!! ", HttpStatus.NOT_FOUND);
         }
         User user = userOptional.get();
-
+        /*
         MimeMessage message = sender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -140,7 +160,17 @@ public class UserService {
             e.printStackTrace();
             return new ResponseEntity<String>("Error while sending mail ", HttpStatus.OK);
         }
-        sender.send(message);
+        sender.send(message); */
+
+        String emailBody = readForgotPwdEmailBody(user);
+        String subject = appProps.getMessages().get(AppConstants.RECOVER_PAZZWD_EMAIL_SUB);
+        try {
+            emailUtils.sendEmail(email, subject, emailBody);
+        } catch (Exception e) {
+            logger.error(AppConstants.EXCEPTION_OCCURRED + e.getMessage(), e);
+            throw new UserAppException(e.getMessage());
+        }
+
         return new ResponseEntity<String>( "Please check your mail "+user.getEmail(), HttpStatus.OK);
     }
 
@@ -158,11 +188,6 @@ public class UserService {
         return city.substring(0, 4)+"/"+GlobalUtility.generateSerialNumber()+"/"+currentDateTime.format(GlobalUtility.generateDateFormat2());
     }
 
-    private String currentDateTime() {
-        // Implement the logic to get the current date and time as a formatted string
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        return currentDateTime.format(GlobalUtility.generateDateFormat1());
-    }
 
     private UserResponse createUserResponse(User user) {
         UserResponse resp = new UserResponse();
@@ -177,8 +202,9 @@ public class UserService {
         resp.setCountry(user.getCountry());
         resp.setState(user.getState());
         resp.setCity(user.getCity());
-        resp.setCreatedAt(user.getCreatedAt());
-        resp.setUpdatedAt(user.getUpdatedAt());
+        resp.setDob(user.getDob());
+        resp.setCreatedDate(user.getCreatedDate());
+        resp.setUpdatedDate(user.getUpdatedDate());
         Role role = user.getRole();
         resp.setRole(role.name());
         resp.setLinkdinID(user.getLinkdinID());
@@ -246,5 +272,55 @@ public class UserService {
                 new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
             }
         }
+    }
+
+    public Map<Integer, String> getCountries() {
+        List<CountryMasterEntity> countries = countryRepo.findAll();
+
+        Map<Integer, String> countryMap = new HashMap<>();
+        countries.forEach(country -> countryMap.put(country.getCountryId(), country.getCountryName()));
+        return countryMap;
+
+    }
+
+    public Map<Integer, String> getStates(Integer countryId) {
+        List<StateMasterEntity> states = stateRepo.findByCountryId(countryId);
+
+        Map<Integer, String> stateMap = new HashMap<>();
+        states.forEach(state -> stateMap.put(state.getStateId(), state.getStateName()));
+        return stateMap;
+    }
+
+    public Map<Integer, String> getCities(Integer stateId) {
+        List<CityMasterEntity> cities = cityRepo.findByStateId(stateId);
+
+        Map<Integer, String> cityMap = new HashMap<>();
+        cities.forEach(city -> cityMap.put(city.getCityId(), city.getCityName()));
+        return cityMap;
+    }
+
+    private String readForgotPwdEmailBody(User user) throws UserAppException {
+        StringBuilder sb = new StringBuilder(AppConstants.EMPTY_STR);
+        String mailBody = AppConstants.EMPTY_STR;
+        String fileName = appProps.getMessages().get(AppConstants.RECOVER_PAZZWD_EMAIL_BODY_FILE);
+        try (FileReader fr = new FileReader(fileName)) {
+            BufferedReader br = new BufferedReader(fr);
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                line = br.readLine();
+            }
+            br.close();
+            String decryptedPwd = AESEncryption.decrypt(user.getPassword());
+            mailBody = sb.toString();
+            mailBody = mailBody.replace(AppConstants.FNAME, user.getFirstname());
+            mailBody = mailBody.replace(AppConstants.LNAME, user.getLastname());
+            mailBody = mailBody.replace(AppConstants.PAZZWD, decryptedPwd);
+        } catch (Exception e) {
+            logger.error(AppConstants.EXCEPTION_OCCURRED + e.getMessage(), e);
+            throw new UserAppException(e.getMessage());
+        }
+        return mailBody;
     }
 }

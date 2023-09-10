@@ -3,6 +3,7 @@ package com.io.ms.controller;
 import com.io.ms.entities.login.ChangePassword;
 import com.io.ms.entities.login.User;
 import com.io.ms.entities.login.UserLoginReq;
+import com.io.ms.exception.UserAppException;
 import com.io.ms.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Map;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -36,7 +38,7 @@ public class UserController {
     }
 
     @GetMapping("/MBP/Login/forgotPWD")
-    public ResponseEntity<?> forgotPassword(@RequestParam String email) {
+    public ResponseEntity<?> forgotPassword(@RequestParam String email) throws UserAppException {
         return loginService.forgotPassword(email);
     }
 
@@ -44,4 +46,20 @@ public class UserController {
     public ResponseEntity<?> changePassword(@RequestBody ChangePassword payload)  {
         return loginService.changePassword(payload);
     }
+
+    @GetMapping("/MBP/Login/countries")
+    public Map<Integer, String> getCountires() {
+        return loginService.getCountries();
+    }
+
+    @GetMapping("/MBP/Login/states/{countryId}")
+    public Map<Integer, String> getStates(@PathVariable Integer countryId) {
+        return loginService.getStates(countryId);
+    }
+
+    @GetMapping("/MBP/Login/cities/{stateId}")
+    public Map<Integer, String> getCities(@PathVariable Integer stateId) {
+        return loginService.getCities(stateId);
+    }
+
 }
