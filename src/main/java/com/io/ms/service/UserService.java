@@ -3,10 +3,7 @@ package com.io.ms.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.io.ms.config.JwtService;
 import com.io.ms.constant.AppConstants;
-import com.io.ms.dao.login.CityMasterRepo;
-import com.io.ms.dao.login.CountryMasterRepo;
-import com.io.ms.dao.login.StateMasterRepo;
-import com.io.ms.dao.login.UserRepository;
+import com.io.ms.dao.login.*;
 import com.io.ms.entities.login.*;
 import com.io.ms.exception.UserAppException;
 import com.io.ms.properties.AppProperties;
@@ -44,14 +41,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private static Logger logger = LoggerFactory.getLogger(UserService.class);
+    @Autowired
     private final UserRepository userRepo;
+    @Autowired
     private final JwtService jwtService;
+    @Autowired
     private final TokenRepository tokenRepository;
     @Autowired
     private AppProperties appProps;
-
     @Autowired
     private CountryMasterRepo countryRepo;
+    @Autowired
+    private MBPTeamsRepo mbpTeamsRepo;
     @Autowired
     private StateMasterRepo stateRepo;
     @Autowired
@@ -89,6 +90,10 @@ public class UserService {
         reg.setAddress2(payload.getAddress2());
         reg.setPincode(payload.getPincode());
         reg.setProfileActive("Yes");
+        reg.setMbpmanagerCode(payload.getMbpmanagerCode());
+        reg.setMbpmanagerName(payload.getMbpmanagerName());
+        reg.setNameofMyTeam(payload.getNameofMyTeam());
+        reg.setCitiesAllocated(payload.getCitiesAllocated());
         var savedUser =userRepo.save(reg);
         var jwtToken = jwtService.generateToken(reg);
         saveUserToken(savedUser, jwtToken);
@@ -201,7 +206,7 @@ public class UserService {
         resp.setProfileActive(user.getProfileActive());
         resp.setMbpmanagerCode(user.getMbpmanagerCode());
         resp.setMbpmanagerName(user.getMbpmanagerName());
-        resp.setNameofTeam(user.getNameofTeam());
+        resp.setNameofMyTeam(user.getNameofMyTeam());
         resp.setCitiesAllocated(user.getCitiesAllocated());
         return resp;
     }
@@ -352,7 +357,7 @@ public class UserService {
         }
         User user = userOptional.get();
 
-        if( user2.getNameofTeam() !=null && user2.getNameofTeam() !=null && user2.getNameofTeam().equals(user.getNameofTeam())){
+        if( user2.getNameofMyTeam() !=null && user2.getNameofMyTeam() !=null && user2.getNameofMyTeam().equals(user.getNameofMyTeam())){
             return new ResponseEntity<String>("Not Allowed to deactivate Profile ", HttpStatus.NOT_FOUND);
         }
 
@@ -379,7 +384,32 @@ public class UserService {
         return ResponseEntity.ok("##");
     }
 
-    public ResponseEntity<?> search_UsersDonthaveManagers() {
-        return ResponseEntity.ok("##");
+
+    /*
+    public ResponseEntity<?> updateReportingManager(MBPManagerReq payload) {
+        Optional<User> userOptional = userRepo.findByEmail(payload.getEmail());
+        if (userOptional.isEmpty()) {
+            return new ResponseEntity<String>("You details not found in system !! "+payload.getEmail(), HttpStatus.NOT_FOUND);
+        }
+        User reg = userOptional.get();
+        if(reg.getNameofMyTeam().equals(payload.getNameofMyTeam())) {
+            return new ResponseEntity<String>("Both are from same team so not allowed to update !! "+payload.getEmail(), HttpStatus.NOT_FOUND);
+        }
+        
+        reg.setMbpmanagerCode(payload.getMbpmanagerCode());
+        reg.setNameofMyTeam(payload.getNameofMyTeam());
+        reg.setCitiesAllocated("");
+        userRepo.save(reg);
+        return ResponseEntity.ok("Your account has been updated");
+    }
+    */
+
+
+    public Map<Integer, String> getMBPTeam() {
+        List<MBPTeams> mbpTeams = mbpTeamsRepo.findAll();
+
+        Map<Integer, String> TeamMap = new HashMap<>();
+        mbpTeams.forEach(i -> TeamMap.put(i.getId(), i.getName()));
+        return TeamMap;
     }
 }

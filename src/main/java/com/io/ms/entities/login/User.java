@@ -104,17 +104,17 @@ public class User implements UserDetails {
   @Column(name = "profileNOTActiveUpdatedby", length = 3)
   private String profileNOTActiveUpdatedby;
 
-  @Column(name = "mbpmanagerCode", length = 21)
+  @Column(name = "mbpmanagerCode", length = 60)
   private String mbpmanagerCode;
 
-  @Column(name = "mbpmanagerName", length = 60)
+  @Column(name = "mbpmanagerName", length = 100)
   private String mbpmanagerName;
 
-  @Column(name = "nameofTeam", length = 50)
-  private String nameofTeam;
+  @Column(name = "nameofMyTeam", length = 50)
+  private String nameofMyTeam;
 
-  @Column(name = "cityAllocated", length = 50)
-  private String citiesAllocated;
+  @Column(name = "cityAllocated", length = 300)
+  private List<String> citiesAllocated;
 
   @Enumerated(EnumType.STRING)
   private Role role;

@@ -2,11 +2,12 @@
    http://localhost:8081/swagger-ui/index.html#/
 
 2) Table :
-   select * from mbp.users;
-   select * from mbp.token;
-   select * from mbp.country_master;
-   select * from mbp.states_master;
-   select * from mbp.cities_master;
+   SELECT * FROM mbp.users;
+   SELECT * FROM mbp.token;
+   SELECT * FROM mbp.COUNTRY_MASTER;
+   SELECT * FROM mbp.states_master;
+   SELECT * FROM mbp.cities_master;
+   select * from mbp.MBPTeam;
 
 3) Sample JSON for Registration : added in folder  
 4) Below URL need JWT token to login 
@@ -27,6 +28,15 @@ Insert Into CITIES_MASTER Values(4,'Mysore',2);
 Insert Into CITIES_MASTER Values(5,'Mumbai',3);
 Insert Into CITIES_MASTER Values(6,'Pune',3);
 commit;
+
+MBP Teams :
+Insert Into mbp.MBPTeam Values(1,'OutReach');
+Insert Into mbp.MBPTeam Values(2,'OutReach_Head');
+Insert Into mbp.MBPTeam Values(3,'TrainTheTrainer');
+Insert Into mbp.MBPTeam Values(4,'TrainTheTrainer_Head');
+Insert Into mbp.MBPTeam Values(5,'Central_Mool');
+
+
 
 Help :
 .requestMatchers(HttpMethod.POST, "/api/users").permitAll()

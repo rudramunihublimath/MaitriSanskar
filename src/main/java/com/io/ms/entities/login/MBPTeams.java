@@ -1,5 +1,6 @@
 package com.io.ms.entities.login;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -8,11 +9,11 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "COUNTRY_MASTER")
-public class CountryMasterEntity {
+@Table(name = "MBPTeam")
+public class MBPTeams {
     @Id
-    private Integer countryId;
-    private Integer countryCode;
-    private String countryName;
+    private Integer Id;
 
+    @Column(name = "name", length = 50)
+    private String name;
 }

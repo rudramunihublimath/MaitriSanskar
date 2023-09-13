@@ -1,6 +1,7 @@
 package com.io.ms.controller;
 
 import com.io.ms.entities.login.ChangePassword;
+import com.io.ms.entities.login.MBPManagerReq;
 import com.io.ms.entities.login.User;
 import com.io.ms.entities.login.UserLoginReq;
 import com.io.ms.exception.UserAppException;
@@ -57,46 +58,5 @@ public class UserController {
                                                  @RequestParam String updatedbyUser)  {
         return loginService.updateUserNOTActive(mbpcode,email,updatedbyUser);
     }
-
-    @GetMapping("/Secured/MBP/findByCode")
-    public ResponseEntity<?> search_UserByCode(@RequestParam String code) {
-        return loginService.search_UserByCode(code);
-    }
-
-    @GetMapping("/1Secured/MBP/findByEmail")
-    public ResponseEntity<?> search_UserByEmail(@RequestParam String email) {
-        return loginService.search_UserByEmail(email);
-    }
-
-    @GetMapping("/1Secured/MBP/findUserByMobile")
-    public ResponseEntity<?> search_UserByMobile(@RequestParam String contactNum) {
-        return loginService.search_UserByMobile(contactNum);
-    }
-
-    @GetMapping("/1Secured/MBP/findUserReportingMe")
-    public ResponseEntity<?> search_UserReportingMe() {
-        return loginService.search_UserReportingMe();
-    }
-
-    @GetMapping("/1Secured/MBP/findUsersDonthaveManagers")
-    public ResponseEntity<?> search_UsersDonthaveManagers() {
-        return loginService.search_UsersDonthaveManagers();
-    }
-
-    @GetMapping("/MBP/Login/countries")
-    public Map<Integer, String> getCountries() {
-        return loginService.getCountries();
-    }
-
-    @GetMapping("/MBP/Login/states/{countryId}")
-    public Map<Integer, String> getStates(@PathVariable Integer countryId) {
-        return loginService.getStates(countryId);
-    }
-
-    @GetMapping("/MBP/Login/cities/{stateId}")
-    public Map<Integer, String> getCities(@PathVariable Integer stateId) {
-        return loginService.getCities(stateId);
-    }
-
 
 }

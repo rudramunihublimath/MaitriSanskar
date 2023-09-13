@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 public class UserResponse {
@@ -37,6 +38,6 @@ public class UserResponse {
     private String refreshToken;
     private String mbpmanagerCode;
     private String mbpmanagerName;
-    private String nameofTeam;
-    private String citiesAllocated;
+    private String nameofMyTeam;
+    private List<String> citiesAllocated;
 }
