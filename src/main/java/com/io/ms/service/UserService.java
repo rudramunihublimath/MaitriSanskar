@@ -11,10 +11,9 @@ import com.io.ms.token.Token;
 import com.io.ms.token.TokenRepository;
 import com.io.ms.token.TokenType;
 import com.io.ms.utility.AESEncryption;
+import com.io.ms.utility.CommonMethods;
 import com.io.ms.utility.EmailUtils;
 import com.io.ms.utility.GlobalUtility;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,18 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -80,7 +74,6 @@ public class UserService {
         reg.setState(payload.getState());
         reg.setCity(payload.getCity());
         reg.setDob(payload.getDob());
-        //reg.setCreatedDate(GlobalUtility.generateDateFormat1()); Automatically taken care
         reg.setRole(Role.USER);
         reg.setLinkdinID(payload.getLinkdinID());
         reg.setFacebookID(payload.getFacebookID());
@@ -90,10 +83,23 @@ public class UserService {
         reg.setAddress2(payload.getAddress2());
         reg.setPincode(payload.getPincode());
         reg.setProfileActive("Yes");
-        reg.setMbpmanagerCode(payload.getMbpmanagerCode());
-        reg.setMbpmanagerName(payload.getMbpmanagerName());
-        reg.setNameofMyTeam(payload.getNameofMyTeam());
-        reg.setCitiesAllocated(payload.getCitiesAllocated());
+        if(payload.getNameofMyTeam().equals("Central_Mool")){
+            reg.setReportingmanagerId("Admin");
+            reg.setReportingmanagerName("Admin");
+            reg.setNameofMyTeam(payload.getNameofMyTeam());
+            reg.setCitiesAllocated(List.of("N/A"));
+        }
+        else{
+            reg.setReportingmanagerId(payload.getReportingmanagerId());
+            String fullname = findUserName(payload.getReportingmanagerId());
+            if(fullname.equals("")){
+                return ResponseEntity.badRequest().body("Manager Details not found for ID "+payload.getReportingmanagerId());
+            }
+            reg.setReportingmanagerName(fullname);
+            reg.setNameofMyTeam(payload.getNameofMyTeam());
+            reg.setCitiesAllocated(payload.getCitiesAllocated());
+        }
+
         var savedUser =userRepo.save(reg);
         var jwtToken = jwtService.generateToken(reg);
         saveUserToken(savedUser, jwtToken);
@@ -113,8 +119,7 @@ public class UserService {
             return new ResponseEntity<String>("Password is incorrect ", HttpStatus.UNAUTHORIZED);
         }
 
-        // Create a UserResponse DTO and populate it with user data
-        UserResponse resp = createUserResponse(user);
+        UserResponse resp = CommonMethods.createUserResponse(user);
 
         // Generate JWT and refresh tokens
         String jwtToken = jwtService.generateToken(user);
@@ -177,40 +182,6 @@ public class UserService {
         return city.substring(0, 4)+"/"+GlobalUtility.generateSerialNumber()+"/"+currentDateTime.format(GlobalUtility.generateDateFormat2());
     }
 
-
-    private UserResponse createUserResponse(User user) {
-        UserResponse resp = new UserResponse();
-        resp.setMbpcode(user.getCode());
-        resp.setFirstname(user.getFirstname());
-        resp.setLastname(user.getLastname());
-        resp.setGender(user.getGender());
-        resp.setEmail(user.getEmail());
-        user.setPassword("*");
-        resp.setContactNum1(user.getContactNum1());
-        resp.setContactNum2(user.getContactNum2());
-        resp.setCountry(user.getCountry());
-        resp.setState(user.getState());
-        resp.setCity(user.getCity());
-        resp.setDob(user.getDob());
-        resp.setCreatedDate(user.getCreatedDate());
-        resp.setUpdatedDate(user.getUpdatedDate());
-        Role role = user.getRole();
-        resp.setRole(role.name());
-        resp.setLinkdinID(user.getLinkdinID());
-        resp.setFacebookID(user.getFacebookID());
-        resp.setInstaID(user.getInstaID());
-        resp.setPannum(user.getPannum());
-        resp.setAddress1(user.getAddress1());
-        resp.setAddress2(user.getAddress2());
-        resp.setPincode(user.getPincode());
-        resp.setProfileActive(user.getProfileActive());
-        resp.setMbpmanagerCode(user.getMbpmanagerCode());
-        resp.setMbpmanagerName(user.getMbpmanagerName());
-        resp.setNameofMyTeam(user.getNameofMyTeam());
-        resp.setCitiesAllocated(user.getCitiesAllocated());
-        return resp;
-    }
-
     private void saveUserToken(User user, String jwtToken) {
         var token = Token.builder()
                 .user(user)
@@ -261,31 +232,6 @@ public class UserService {
         }
     }
 
-    public Map<Integer, String> getCountries() {
-        List<CountryMasterEntity> countries = countryRepo.findAll();
-
-        Map<Integer, String> countryMap = new HashMap<>();
-        countries.forEach(country -> countryMap.put(country.getCountryId(), country.getCountryName()));
-        return countryMap;
-
-    }
-
-    public Map<Integer, String> getStates(Integer countryId) {
-        List<StateMasterEntity> states = stateRepo.findByCountryId(countryId);
-
-        Map<Integer, String> stateMap = new HashMap<>();
-        states.forEach(state -> stateMap.put(state.getStateId(), state.getStateName()));
-        return stateMap;
-    }
-
-    public Map<Integer, String> getCities(Integer stateId) {
-        List<CityMasterEntity> cities = cityRepo.findByStateId(stateId);
-
-        Map<Integer, String> cityMap = new HashMap<>();
-        cities.forEach(city -> cityMap.put(city.getCityId(), city.getCityName()));
-        return cityMap;
-    }
-
     private String readForgotPwdEmailBody(User user) throws UserAppException {
         StringBuilder sb = new StringBuilder(AppConstants.EMPTY_STR);
         String mailBody = AppConstants.EMPTY_STR;
@@ -311,16 +257,16 @@ public class UserService {
         return mailBody;
     }
 
-    public ResponseEntity<?> updateUserDetailsSelf(User payload) {
+    public ResponseEntity<?> updateUserDetails(User payload) {
         Optional<User> userOptional = userRepo.findByEmail(payload.getEmail());
         if (userOptional.isEmpty()) {
             return new ResponseEntity<String>("User not found. Please register !! ", HttpStatus.NOT_FOUND);
         }
         User reg = userOptional.get();
-        //reg.setCode(generateUserCode(payload.getCity()) );
+
         reg.setFirstname(payload.getFirstname());
         reg.setLastname(payload.getLastname());
-        //reg.setGender(payload.getGender());
+        reg.setGender(payload.getGender());
         //reg.setEmail(payload.getEmail());
         //reg.setPassword(AESEncryption.encrypt(payload.getPassword()));
         reg.setContactNum1(payload.getContactNum1());
@@ -329,8 +275,6 @@ public class UserService {
         reg.setState(payload.getState());
         reg.setCity(payload.getCity());
         reg.setDob(payload.getDob());
-        //reg.setCreatedDate(GlobalUtility.generateDateFormat1()); Automatically taken care
-        //reg.setRole(Role.USER);
         reg.setLinkdinID(payload.getLinkdinID());
         reg.setFacebookID(payload.getFacebookID());
         reg.setInstaID(payload.getInstaID());
@@ -338,78 +282,67 @@ public class UserService {
         reg.setAddress1(payload.getAddress1());
         reg.setAddress2(payload.getAddress2());
         reg.setPincode(payload.getPincode());
-        //reg.setProfileActive("Yes");
+        reg.setProfileActive("Yes");
+        reg.setReportingmanagerId(payload.getReportingmanagerId());
+        String fullname = findUserName(payload.getReportingmanagerId());
+        if(fullname.equals("")){
+            return ResponseEntity.badRequest().body("Manager Details not found for ID "+payload.getReportingmanagerId());
+        }
+        reg.setReportingmanagerName(fullname);
+        reg.setNameofMyTeam(payload.getNameofMyTeam());
+        reg.setCitiesAllocated(payload.getCitiesAllocated());
         userRepo.save(reg);
         return ResponseEntity.ok("Your account has been updated");
     }
 
-
-    public ResponseEntity<?> updateUserNOTActive(String code, String email, String updatedbyCode) {
-        Optional<User> userOptional2 = userRepo.findByCode(updatedbyCode);
-        if (userOptional2.isEmpty()) {
-            return new ResponseEntity<String>("User not found with given details !! "+updatedbyCode, HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> updateUserNOTActive(String userEmail, String managerEmail) {
+        Optional<User> managerOptional = userRepo.findByEmail(managerEmail);
+        if (managerOptional.isEmpty()) {
+            return new ResponseEntity<String>("Manager details not found !! "+managerEmail, HttpStatus.NOT_FOUND);
         }
-        User user2 = userOptional2.get();
+        User manager = managerOptional.get();
 
-        Optional<User> userOptional = userRepo.findByCodeAndEmail(code,email);
+        Optional<User> userOptional = userRepo.findByEmail(userEmail);
         if (userOptional.isEmpty()) {
-            return new ResponseEntity<String>("User not found with given details !! "+code, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<String>("User details not found !! "+userEmail, HttpStatus.NOT_FOUND);
         }
         User user = userOptional.get();
 
-        if( user2.getNameofMyTeam() !=null && user2.getNameofMyTeam() !=null && user2.getNameofMyTeam().equals(user.getNameofMyTeam())){
-            return new ResponseEntity<String>("Not Allowed to deactivate Profile ", HttpStatus.NOT_FOUND);
-        }
+        //validate team precedence
+        boolean flag = validateTeamPrecedence(user.getNameofMyTeam(), manager.getNameofMyTeam());
+        if(flag==false)
+            return new ResponseEntity<String>("Not Authorized !! "+userEmail, HttpStatus.NOT_FOUND);
 
         user.setProfileActive("No");
-        user.setProfileNOTActiveUpdatedby(updatedbyCode);
+        user.setProfileNOTActiveUpdatedby(managerEmail);
         userRepo.save(user);
         return ResponseEntity.ok("Profile is deactivated");
     }
 
-
-    public ResponseEntity<?> search_UserByCode(String code) {
-        return ResponseEntity.ok("##");
-    }
-
-    public ResponseEntity<?> search_UserByEmail(String email) {
-        return ResponseEntity.ok("##");
-    }
-
-    public ResponseEntity<?> search_UserByMobile(String contactNum) {
-        return ResponseEntity.ok("##");
-    }
-
-    public ResponseEntity<?> search_UserReportingMe() {
-        return ResponseEntity.ok("##");
-    }
-
-
-    /*
-    public ResponseEntity<?> updateReportingManager(MBPManagerReq payload) {
-        Optional<User> userOptional = userRepo.findByEmail(payload.getEmail());
-        if (userOptional.isEmpty()) {
-            return new ResponseEntity<String>("You details not found in system !! "+payload.getEmail(), HttpStatus.NOT_FOUND);
-        }
-        User reg = userOptional.get();
-        if(reg.getNameofMyTeam().equals(payload.getNameofMyTeam())) {
-            return new ResponseEntity<String>("Both are from same team so not allowed to update !! "+payload.getEmail(), HttpStatus.NOT_FOUND);
-        }
-        
-        reg.setMbpmanagerCode(payload.getMbpmanagerCode());
-        reg.setNameofMyTeam(payload.getNameofMyTeam());
-        reg.setCitiesAllocated("");
-        userRepo.save(reg);
-        return ResponseEntity.ok("Your account has been updated");
-    }
-    */
-
-
-    public Map<Integer, String> getMBPTeam() {
+    private boolean validateTeamPrecedence(String uname, String mname) {
         List<MBPTeams> mbpTeams = mbpTeamsRepo.findAll();
+        int ux=0,my=0;
+        for(MBPTeams mt :mbpTeams){
+            if(uname.equals(mt.getName())) {
+                ux=mt.getId();
+            }
+            if(mname.equals(mt.getName())) {
+                my=mt.getId();
+            }
+        }
+        if(ux!=0 && my!=0 && my>ux ) return true;
 
-        Map<Integer, String> TeamMap = new HashMap<>();
-        mbpTeams.forEach(i -> TeamMap.put(i.getId(), i.getName()));
-        return TeamMap;
+        return false;
     }
+
+    public String findUserName(String email) {
+        Optional<User> userOptional = userRepo.findByEmail(email);
+        if (userOptional.isEmpty()) {
+            return "";
+        }
+        User user = userOptional.get();
+        return user.getFirstname()+" "+ user.getLastname();
+    }
+
+
 }

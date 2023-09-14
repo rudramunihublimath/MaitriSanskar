@@ -5,6 +5,7 @@ import com.io.ms.entities.login.MBPManagerReq;
 import com.io.ms.entities.login.User;
 import com.io.ms.entities.login.UserLoginReq;
 import com.io.ms.exception.UserAppException;
+import com.io.ms.service.UserReportService;
 import com.io.ms.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,51 +20,51 @@ import java.util.Map;
 public class UserReportsController {
     private static final Logger logger = LoggerFactory.getLogger(UserReportsController.class);
     @Autowired
-    UserService loginService;
+    UserReportService userReportService;
 
-    public UserReportsController(UserService loginService) {
-        this.loginService = loginService;
+    public UserReportsController(UserReportService userReportService) {
+        this.userReportService = userReportService;
     }
 
-    @GetMapping("/Secured/MBP/findByCode")
+    /*
+    @GetMapping("/Secured/MBP/Login/findByCode")
     public ResponseEntity<?> search_UserByCode(@RequestParam String code) {
-        return loginService.search_UserByCode(code);
-    }
+        return userReportService.search_UserByCode(code);
+    } */
 
-    @GetMapping("/1Secured/MBP/findByEmail")
+    @GetMapping("/Secured/MBP/Login/findByEmail")
     public ResponseEntity<?> search_UserByEmail(@RequestParam String email) {
-        return loginService.search_UserByEmail(email);
+        return userReportService.search_UserByEmail(email);
     }
 
-    @GetMapping("/1Secured/MBP/findUserByMobile")
+    @GetMapping("/Secured/MBP/Login/findUserByMobile")
     public ResponseEntity<?> search_UserByMobile(@RequestParam String contactNum) {
-        return loginService.search_UserByMobile(contactNum);
+        return userReportService.search_UserByMobile(contactNum);
     }
 
-    @GetMapping("/1Secured/MBP/findUserReportingMe")
-    public ResponseEntity<?> search_UserReportingMe() {
-        return loginService.search_UserReportingMe();
+    @GetMapping("/Secured/MBP/Login/findUserReportingMe")
+    public ResponseEntity<?> search_UserReportingMe(@RequestParam String email) {
+        return userReportService.search_UserReportingMe(email);
     }
 
-    @GetMapping("/MBP/Login/countries")
+    @GetMapping("/Secured/MBP/Login/countries")
     public Map<Integer, String> getCountries() {
-        return loginService.getCountries();
+        return userReportService.getCountries();
     }
 
-    @GetMapping("/MBP/Login/MBPTeam")
+    @GetMapping("/Secured/MBP/Login/MBPTeam")
     public Map<Integer, String> getMBPTeam() {
-        return loginService.getMBPTeam();
+        return userReportService.getMBPTeam();
     }
 
-    @GetMapping("/MBP/Login/states/{countryId}")
+    @GetMapping("/Secured/MBP/Login/states/{countryId}")
     public Map<Integer, String> getStates(@PathVariable Integer countryId) {
-        return loginService.getStates(countryId);
+        return userReportService.getStates(countryId);
     }
 
-    @GetMapping("/MBP/Login/cities/{stateId}")
+    @GetMapping("/Secured/MBP/Login/cities/{stateId}")
     public Map<Integer, String> getCities(@PathVariable Integer stateId) {
-        return loginService.getCities(stateId);
+        return userReportService.getCities(stateId);
     }
-
 
 }

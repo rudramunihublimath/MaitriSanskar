@@ -36,8 +36,8 @@ public class UserResponse {
     private String profileNOTActiveUpdatedby;
     private String jwtToken;
     private String refreshToken;
-    private String mbpmanagerCode;
-    private String mbpmanagerName;
+    private String reportingmanagerId;
+    private String reportingmanagerName;
     private String nameofMyTeam;
     private List<String> citiesAllocated;
 }

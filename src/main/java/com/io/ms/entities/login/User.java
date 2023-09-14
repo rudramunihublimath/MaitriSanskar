@@ -30,7 +30,7 @@ public class User implements UserDetails {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "code", unique = true, nullable = false, length = 25)
+  @Column(name = "code", unique = true, nullable = false, length = 40)
   private String code;
 
   @Column(name = "firstname", nullable = false, length = 50)
@@ -43,7 +43,7 @@ public class User implements UserDetails {
   @Column(length = 10)
   private Gender gender;
   @Email
-  @Column(name = "email", nullable = false, length = 30)
+  @Column(name = "email", nullable = false, length = 50)
   private String email;
 
   @Column(name = "password", nullable = false, length = 60)
@@ -101,14 +101,14 @@ public class User implements UserDetails {
   @Column(name = "profileactive", length = 3)
   private String profileActive;
 
-  @Column(name = "profileNOTActiveUpdatedby", length = 3)
+  @Column(name = "profileNOTActiveUpdatedby", length = 40)
   private String profileNOTActiveUpdatedby;
 
-  @Column(name = "mbpmanagerCode", length = 60)
-  private String mbpmanagerCode;
+  @Column(name = "reportingmanagerId", length = 50)
+  private String reportingmanagerId;
 
-  @Column(name = "mbpmanagerName", length = 100)
-  private String mbpmanagerName;
+  @Column(name = "reportingmanagerName", length = 100)
+  private String reportingmanagerName;
 
   @Column(name = "nameofMyTeam", length = 50)
   private String nameofMyTeam;

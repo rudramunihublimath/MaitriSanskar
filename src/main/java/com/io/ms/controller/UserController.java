@@ -43,20 +43,20 @@ public class UserController {
         return loginService.forgotPassword(email);
     }
 
-    @PutMapping(value = "/Secured/MBP/ChangePassword")
+    @PutMapping(value = "/Secured/MBP/Login/ChangePassword")
     public ResponseEntity<?> changePassword(@RequestBody ChangePassword payload)  {
         return loginService.changePassword(payload);
     }
 
-    @PatchMapping(value = "/1Secured/MBP/UpdateUserData")
-    public ResponseEntity<?> updateUserDetailsSelf(@RequestBody User payload)  {
-        return loginService.updateUserDetailsSelf(payload);
+    @PatchMapping(value = "/Secured/MBP/Login/UpdateUserData")
+    public ResponseEntity<?> updateUserDetails(@RequestBody User payload)  {
+        return loginService.updateUserDetails(payload);
     }
 
-    @PutMapping(value = "/1Secured/MBP/UpdateNOTActive")
-    public ResponseEntity<?> updateUserNOTActive(@RequestParam String mbpcode,@RequestParam String email,
-                                                 @RequestParam String updatedbyUser)  {
-        return loginService.updateUserNOTActive(mbpcode,email,updatedbyUser);
+    @PutMapping(value = "/Secured/MBP/Login/UpdateNOTActive")
+    public ResponseEntity<?> updateUserNOTActive(@RequestParam String userEmail,
+                                                 @RequestParam String managerEmail)  {
+        return loginService.updateUserNOTActive(userEmail,managerEmail);
     }
 
 }
