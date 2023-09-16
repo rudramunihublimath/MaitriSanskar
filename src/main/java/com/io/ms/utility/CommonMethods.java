@@ -1,13 +1,8 @@
 package com.io.ms.utility;
 
-import com.io.ms.dao.login.MBPTeamsRepo;
-import com.io.ms.entities.login.MBPTeams;
 import com.io.ms.entities.login.Role;
 import com.io.ms.entities.login.User;
 import com.io.ms.entities.login.UserResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 public class CommonMethods {
 

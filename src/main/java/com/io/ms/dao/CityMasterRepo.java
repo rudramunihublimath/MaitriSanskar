@@ -1,4 +1,4 @@
-package com.io.ms.dao.login;
+package com.io.ms.dao;
 
 
 import com.io.ms.entities.login.CityMasterEntity;

@@ -1,6 +1,8 @@
 package com.io.ms.entities.login;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.io.ms.entities.login.Gender;
+import com.io.ms.entities.login.Role;
 import com.io.ms.token.Token;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

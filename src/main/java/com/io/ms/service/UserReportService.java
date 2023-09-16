@@ -1,7 +1,7 @@
 package com.io.ms.service;
 
 import com.io.ms.config.JwtService;
-import com.io.ms.dao.login.*;
+import com.io.ms.dao.*;
 import com.io.ms.entities.login.*;
 import com.io.ms.properties.AppProperties;
 import com.io.ms.token.TokenRepository;

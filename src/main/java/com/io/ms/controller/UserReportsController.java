@@ -1,12 +1,6 @@
 package com.io.ms.controller;
 
-import com.io.ms.entities.login.ChangePassword;
-import com.io.ms.entities.login.MBPManagerReq;
-import com.io.ms.entities.login.User;
-import com.io.ms.entities.login.UserLoginReq;
-import com.io.ms.exception.UserAppException;
 import com.io.ms.service.UserReportService;
-import com.io.ms.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.io.ms.config;
 
-import com.io.ms.dao.login.UserRepository;
+import com.io.ms.dao.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

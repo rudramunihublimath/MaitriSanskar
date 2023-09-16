@@ -9,6 +9,9 @@
    SELECT * FROM mbp.cities_master;
    select * from mbp.MBPTeam;
 
+   SELECT * FROM mbp.school;
+   SELECT * FROM mbp.school_poc;
+
 3) Sample JSON for Registration : added in folder  
 4) Below URL need JWT token to login 
 
@@ -36,6 +39,13 @@ Insert Into mbp.MBPTeam Values(3,'TrainTheTrainer');
 Insert Into mbp.MBPTeam Values(4,'TrainTheTrainer_Head');
 Insert Into mbp.MBPTeam Values(5,'Central_Mool');
 
+Insert Into mbp.SchoolBoard Values(1,'CBSE');
+Insert Into mbp.SchoolBoard Values(2,'ICSE');
+Insert Into mbp.SchoolBoard Values(3,'IB');
+Insert Into mbp.SchoolBoard Values(4,'NIOS');
+Insert Into mbp.SchoolBoard Values(5,'AISSCE');
+
+targetPhase
 
 
 Help :

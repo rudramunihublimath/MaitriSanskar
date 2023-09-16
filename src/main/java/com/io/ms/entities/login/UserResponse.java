@@ -1,10 +1,9 @@
 package com.io.ms.entities.login;
 
+import com.io.ms.entities.login.Gender;
 import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
 
 @Data
