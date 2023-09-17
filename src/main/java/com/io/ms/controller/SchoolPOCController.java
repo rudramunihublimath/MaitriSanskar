@@ -31,7 +31,9 @@ public class SchoolPOCController {
         return schoolPOCService.editSchoolPOC(payload);
     }
 
-
-
+    @GetMapping(value = "/Secured/MBP/School/FindSchoolPOC")
+    public ResponseEntity<?> findSchoolPOC(@RequestParam Long id)  {
+        return schoolPOCService.findSchoolPOC(id);
+    }
 
 }

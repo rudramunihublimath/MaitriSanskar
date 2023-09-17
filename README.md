@@ -11,6 +11,8 @@
 
    SELECT * FROM mbp.school;
    SELECT * FROM mbp.school_poc;
+   SELECT * FROM mbp.school_meetings;
+
 
 3) Sample JSON for Registration : added in folder  
 4) Below URL need JWT token to login 
@@ -45,7 +47,8 @@ Insert Into mbp.SchoolBoard Values(3,'IB');
 Insert Into mbp.SchoolBoard Values(4,'NIOS');
 Insert Into mbp.SchoolBoard Values(5,'AISSCE');
 
-targetPhase
+Insert Into mbp.TargetPhase Values(1,'MiniPilot');
+Insert Into mbp.TargetPhase Values(2,'Pilot');
 
 
 Help :

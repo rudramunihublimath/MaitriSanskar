@@ -100,4 +100,7 @@ public class SchoolNameRequest {
     @OneToMany(mappedBy = "schoolNameRequest")
     private List<SchoolPOCRequest> SchoolPOCRequest;
 
+    @OneToMany(mappedBy = "schoolNameRequest")
+    private List<SchoolMBPMeetingRequest> schoolMBPMeetingRequest;
+
 }
