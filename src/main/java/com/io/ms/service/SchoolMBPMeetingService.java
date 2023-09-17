@@ -55,7 +55,7 @@ public class SchoolMBPMeetingService {
         req.setFeedback_Improvement( payload.getFeedback_Improvement() );
         req.setCreatedDate(payload.getCreatedDate());
         req.setUpdatedDate(payload.getUpdatedDate());
-        schoolMBPMeetingRepo.save(payload);
+        schoolMBPMeetingRepo.save(req);
         return ResponseEntity.ok("School Meeting info is updated ");
     }
 
