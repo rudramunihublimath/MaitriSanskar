@@ -103,4 +103,7 @@ public class SchoolNameRequest {
     @OneToMany(mappedBy = "schoolNameRequest")
     private List<SchoolMBPMeetingRequest> schoolMBPMeetingRequest;
 
+    @OneToOne(mappedBy = "nameRequest", cascade = CascadeType.ALL, optional = true)
+    private OutReachRequest outReachRequest;
+
 }

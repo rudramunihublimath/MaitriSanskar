@@ -12,7 +12,7 @@
    SELECT * FROM mbp.school;
    SELECT * FROM mbp.school_poc;
    SELECT * FROM mbp.school_meetings;
-
+   SELECT * FROM mbp.outreach;
 
 3) Sample JSON for Registration : added in folder  
 4) Below URL need JWT token to login 
