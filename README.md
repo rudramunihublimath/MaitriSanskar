@@ -1,6 +1,6 @@
 1) Swagger URL :
    http://localhost:8081/swagger-ui/index.html#/
-
+------------\n
 2) Table :
    SELECT * FROM mbp.users;
    SELECT * FROM mbp.token;
@@ -13,14 +13,11 @@
    SELECT * FROM mbp.school_poc;
    SELECT * FROM mbp.school_meetings;
    SELECT * FROM mbp.outreach;
+   SELECT * FROM mbp.training;
+   SELECT * FROM mbp.MBPFlags;
 
-3) Sample JSON for Registration : added in folder  
-4) Below URL need JWT token to login 
-
-http://localhost:8081/Secured/MBP/ChangePassword
-http://localhost:8081/Secured/MBP/demo-controller
-
-5) Static data inserted in tables :
+ ------------\n
+3) Static data inserted in tables :
 
 Insert Into COUNTRY_MASTER Values(1,'+91','India');
 Insert Into STATES_MASTER Values(1,1,'Punjab');
@@ -50,7 +47,7 @@ Insert Into mbp.SchoolBoard Values(5,'AISSCE');
 Insert Into mbp.TargetPhase Values(1,'MiniPilot');
 Insert Into mbp.TargetPhase Values(2,'Pilot');
 
-
+------------\n
 Help :
 .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
 .requestMatchers(HttpMethod.GET, "/api/users/login", "/api/users/{username}", "/api/users/logout", "/api/customers", "/api/storages").authenticated()
@@ -58,4 +55,4 @@ Help :
 .requestMatchers(HttpMethod.PUT, "/api/customers/{id}", "/api/storages/{id}").authenticated()
 .requestMatchers(HttpMethod.DELETE, "/api/users/{id}", "/api/storages/{id}", "/api/customers/{id}").authenticated()
 
----
+------------\n

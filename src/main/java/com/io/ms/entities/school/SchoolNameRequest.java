@@ -106,4 +106,7 @@ public class SchoolNameRequest {
     @OneToOne(mappedBy = "nameRequest", cascade = CascadeType.ALL, optional = true)
     private OutReachRequest outReachRequest;
 
+    @OneToOne(mappedBy = "trainRequest", cascade = CascadeType.ALL, optional = true)
+    private TrainingRequest trainingRequest;
+
 }
