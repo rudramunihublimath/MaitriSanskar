@@ -109,4 +109,7 @@ public class SchoolNameRequest {
     @OneToOne(mappedBy = "trainRequest", cascade = CascadeType.ALL, optional = true)
     private TrainingRequest trainingRequest;
 
+    @OneToOne(mappedBy = "mbpFlagsReq", cascade = CascadeType.ALL, optional = true)
+    private MBPFlagsRequest mbpFlagsRequest;
+
 }

@@ -103,11 +103,11 @@ public class User implements UserDetails {
   @Column(name = "profileactive", length = 3)
   private String profileActive;
 
-  @Column(name = "profileNOTActiveUpdatedby", length = 40)
-  private String profileNOTActiveUpdatedby;
+  @Column(name = "profileNOTActiveUpdatedby", length = 50)
+  private Long profileNOTActiveUpdatedby;
 
   @Column(name = "reportingmanagerId", length = 50)
-  private String reportingmanagerId;
+  private Long reportingmanagerId;
 
   @Column(name = "reportingmanagerName", length = 100)
   private String reportingmanagerName;

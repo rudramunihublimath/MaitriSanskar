@@ -56,9 +56,12 @@ public class UserService {
     private EmailUtils emailUtils;
 
     public ResponseEntity<?> registerUser(User payload) {
-        // validated if emailID already present
+        Map<String,Object> map = new HashMap<>();
+
         if(userRepo.existsByEmail(payload.getEmail())){
-            return ResponseEntity.badRequest().body("User is already registered. ");
+            map.put("message","User is already registered");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
         }
 
         User reg = new User();
@@ -84,7 +87,7 @@ public class UserService {
         reg.setPincode(payload.getPincode());
         reg.setProfileActive("Yes");
         if(payload.getNameofMyTeam().equals("Central_Mool")){
-            reg.setReportingmanagerId("Admin");
+            reg.setReportingmanagerId(0l);
             reg.setReportingmanagerName("Admin");
             reg.setNameofMyTeam(payload.getNameofMyTeam());
             reg.setCitiesAllocated(List.of("N/A"));
@@ -93,7 +96,9 @@ public class UserService {
             reg.setReportingmanagerId(payload.getReportingmanagerId());
             String fullname = findUserName(payload.getReportingmanagerId());
             if(fullname.equals("")){
-                return ResponseEntity.badRequest().body("Manager Details not found for ID "+payload.getReportingmanagerId());
+                map.put("message","Manager Details not found for ID "+payload.getReportingmanagerId());
+                map.put("status",false);
+                return ResponseEntity.badRequest().body(map);
             }
             reg.setReportingmanagerName(fullname);
             reg.setNameofMyTeam(payload.getNameofMyTeam());
@@ -103,20 +108,31 @@ public class UserService {
         var savedUser =userRepo.save(reg);
         var jwtToken = jwtService.generateToken(reg);
         saveUserToken(savedUser, jwtToken);
-        return ResponseEntity.ok("Your account has been created");
+
+        map.put("message","Your account has been created");
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     public ResponseEntity<?> loginUser(UserLoginReq payload) {
+        Map<String,Object> map = new HashMap<>();
+
         Optional<User> userOptional = userRepo.findByEmail(payload.getEmail());
         if (userOptional.isEmpty()) {
-            return new ResponseEntity<String>("User not found. Please register !! ", HttpStatus.NOT_FOUND);
+            map.put("message","User not found. Please register !! ");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return new ResponseEntity<String>("User not found. Please register !! ", HttpStatus.NOT_FOUND);
         }
         User user = userOptional.get();
 
         //validate password
         boolean isPasswordValid = isValidatePassword(payload, user);
         if (!isPasswordValid) {
-            return new ResponseEntity<String>("Password is incorrect ", HttpStatus.UNAUTHORIZED);
+            map.put("message","Password is incorrect ");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return new ResponseEntity<String>("Password is incorrect ", HttpStatus.UNAUTHORIZED);
         }
 
         UserResponse resp = CommonMethods.createUserResponse(user);
@@ -127,15 +143,26 @@ public class UserService {
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
 
+        //tokenRepository.deleteUserTokenByID(user.getId());
+
         resp.setJwtToken(jwtToken);
         resp.setRefreshToken(refreshToken);
-        return new ResponseEntity<>(resp, HttpStatus.OK);
+
+        map.put("message",resp);
+        map.put("status",true);
+
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     public ResponseEntity<?> changePassword(ChangePassword payload) {
+        Map<String,Object> map = new HashMap<>();
+
         Optional<User> userOptional = userRepo.findByEmail(payload.getEmail());
         if (userOptional.isEmpty()) {
-            return new ResponseEntity<String>("Please enter correct mail id!! ", HttpStatus.NOT_FOUND);
+            map.put("message","Please enter correct mail id!! ");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return new ResponseEntity<String>("Please enter correct mail id!! ", HttpStatus.NOT_FOUND);
         }
         User user = userOptional.get();
 
@@ -144,15 +171,27 @@ public class UserService {
             userRepo.save(user);
         }
         else{
-            return new ResponseEntity<String>("Your Current Password is not correct ", HttpStatus.UNAUTHORIZED);
+            map.put("message","Your Current Password is not correct ");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return new ResponseEntity<String>("Your Current Password is not correct ", HttpStatus.UNAUTHORIZED);
         }
-        return ResponseEntity.ok("Your Password is changed ");
+
+        map.put("message","Your Password is changed");
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
+        //return ResponseEntity.ok("Your Password is changed ");
     }
 
     public ResponseEntity<?> forgotPassword(String email) throws UserAppException {
+        Map<String,Object> map = new HashMap<>();
+
         Optional<User> userOptional = userRepo.findByEmail(email);
         if (userOptional.isEmpty()) {
-            return new ResponseEntity<String>("Please enter correct mail id!! ", HttpStatus.NOT_FOUND);
+            map.put("message","Please enter correct mail id!! ");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return new ResponseEntity<String>("Please enter correct mail id!! ", HttpStatus.NOT_FOUND);
         }
         User user = userOptional.get();
 
@@ -165,7 +204,10 @@ public class UserService {
             throw new UserAppException(e.getMessage());
         }
 
-        return new ResponseEntity<String>( "Please check your mail "+user.getEmail(), HttpStatus.OK);
+        map.put("message","Please check your mail "+user.getEmail());
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
+        //return new ResponseEntity<String>( "Please check your mail "+user.getEmail(), HttpStatus.OK);
     }
 
     private boolean isValidatePassword(UserLoginReq payload, User user) {
@@ -183,25 +225,48 @@ public class UserService {
     }
 
     private void saveUserToken(User user, String jwtToken) {
-        var token = Token.builder()
+        /*var token = Token.builder()
                 .user(user)
                 .token(jwtToken)
                 .tokenType(TokenType.BEARER)
                 .expired(false)     // Zero
                 .revoked(false)
                 .build();
-        tokenRepository.save(token);
+        tokenRepository.save(token); */
+
+        // Check if a token already exists for the user
+        Token existingToken = tokenRepository.findByUser(user);
+
+        if (existingToken != null) {
+            // Update the existing token with the new JWT token
+            existingToken.setToken(jwtToken);
+            existingToken.setExpired(false);
+            existingToken.setRevoked(false);
+        } else {
+            // Create a new token if it doesn't exist
+            existingToken = Token.builder()
+                    .user(user)
+                    .token(jwtToken)
+                    .tokenType(TokenType.BEARER)
+                    .expired(false)
+                    .revoked(false)
+                    .build();
+        }
+
+        // Save the token (either the updated or new one)
+        tokenRepository.save(existingToken);
     }
 
     private void revokeAllUserTokens(User user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
         if (validUserTokens.isEmpty())
             return;
-        validUserTokens.forEach(token -> {
+       /* validUserTokens.forEach(token -> {
             token.setExpired(true);
             token.setRevoked(true);
         });
-        tokenRepository.saveAll(validUserTokens);
+        tokenRepository.saveAll(validUserTokens);   */
+        tokenRepository.deleteAll(validUserTokens);
     }
 
     public void refreshToken(
@@ -258,9 +323,14 @@ public class UserService {
     }
 
     public ResponseEntity<?> updateUserDetails(User payload) {
+        Map<String,Object> map = new HashMap<>();
+
         Optional<User> userOptional = userRepo.findByEmail(payload.getEmail());
         if (userOptional.isEmpty()) {
-            return new ResponseEntity<String>("User not found. Please register !! ", HttpStatus.NOT_FOUND);
+            map.put("message","User not found. Please register !!");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return new ResponseEntity<String>("User not found. Please register !! ", HttpStatus.NOT_FOUND);
         }
         User reg = userOptional.get();
 
@@ -286,37 +356,59 @@ public class UserService {
         reg.setReportingmanagerId(payload.getReportingmanagerId());
         String fullname = findUserName(payload.getReportingmanagerId());
         if(fullname.equals("")){
-            return ResponseEntity.badRequest().body("Manager Details not found for ID "+payload.getReportingmanagerId());
+            map.put("message","Manager Details not found for ID "+payload.getReportingmanagerId());
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return ResponseEntity.badRequest().body("Manager Details not found for ID "+payload.getReportingmanagerId());
         }
         reg.setReportingmanagerName(fullname);
         reg.setNameofMyTeam(payload.getNameofMyTeam());
         reg.setCitiesAllocated(payload.getCitiesAllocated());
         userRepo.save(reg);
-        return ResponseEntity.ok("Your account has been updated");
+        map.put("message","Your account has been updated");
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
+        //return ResponseEntity.ok("Your account has been updated");
     }
 
-    public ResponseEntity<?> updateUserNOTActive(String userEmail, String managerEmail) {
-        Optional<User> managerOptional = userRepo.findByEmail(managerEmail);
+    public ResponseEntity<?> updateUserNOTActive(Long userId, Long managerId) {
+        Map<String,Object> map = new HashMap<>();
+
+        Optional<User> managerOptional = userRepo.findById(managerId);
         if (managerOptional.isEmpty()) {
-            return new ResponseEntity<String>("Manager details not found !! "+managerEmail, HttpStatus.NOT_FOUND);
+            map.put("message","Manager details not found !! "+managerId);
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return new ResponseEntity<String>("Manager details not found !! "+managerEmail, HttpStatus.NOT_FOUND);
         }
         User manager = managerOptional.get();
 
-        Optional<User> userOptional = userRepo.findByEmail(userEmail);
+        Optional<User> userOptional = userRepo.findById(userId);
         if (userOptional.isEmpty()) {
-            return new ResponseEntity<String>("User details not found !! "+userEmail, HttpStatus.NOT_FOUND);
+            map.put("message","User details not found !! "+userId);
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return new ResponseEntity<String>("User details not found !! "+userEmail, HttpStatus.NOT_FOUND);
         }
         User user = userOptional.get();
 
         //validate team precedence
         boolean flag = validateTeamPrecedence(user.getNameofMyTeam(), manager.getNameofMyTeam());
-        if(flag==false)
-            return new ResponseEntity<String>("Not Authorized !! "+userEmail, HttpStatus.NOT_FOUND);
+        if(flag==false){
+            map.put("message","Not Authorized !! ");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+        }
+            //return new ResponseEntity<String>("Not Authorized !! "+userEmail, HttpStatus.NOT_FOUND);
 
         user.setProfileActive("No");
-        user.setProfileNOTActiveUpdatedby(managerEmail);
+        user.setProfileNOTActiveUpdatedby(managerId);
         userRepo.save(user);
-        return ResponseEntity.ok("Profile is deactivated");
+
+        map.put("message","Profile is deactivated");
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
+        //return ResponseEntity.ok("");
     }
 
     private boolean validateTeamPrecedence(String uname, String mname) {
@@ -335,8 +427,8 @@ public class UserService {
         return false;
     }
 
-    public String findUserName(String email) {
-        Optional<User> userOptional = userRepo.findByEmail(email);
+    public String findUserName(Long id) {
+        Optional<User> userOptional = userRepo.findById(id);
         if (userOptional.isEmpty()) {
             return "";
         }

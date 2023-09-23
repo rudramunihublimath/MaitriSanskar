@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 public class UserResponse {
-
+    private Long id;
     private String mbpcode;
     private String firstname;
     private String lastname;
@@ -32,10 +32,10 @@ public class UserResponse {
     private String address2;
     private String pincode;
     private String profileActive;
-    private String profileNOTActiveUpdatedby;
+    private Long profileNOTActiveUpdatedby;
     private String jwtToken;
     private String refreshToken;
-    private String reportingmanagerId;
+    private Long reportingmanagerId;
     private String reportingmanagerName;
     private String nameofMyTeam;
     private List<String> citiesAllocated;

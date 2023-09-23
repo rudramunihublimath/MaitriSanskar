@@ -66,6 +66,7 @@ public class UserReportService {
         return cityMap;
     }
 
+    /*
     public ResponseEntity<?> search_UserByCode(String code) {
         Optional<User> userOptional = userRepo.findByCode(code);
         if (userOptional.isEmpty()) {
@@ -74,16 +75,23 @@ public class UserReportService {
         User user = userOptional.get();
         UserReportResp resp = getUserReportResponse(user);
         return new ResponseEntity<>(resp, HttpStatus.OK);
-    }
+    } */
 
     public ResponseEntity<?> search_UserByEmail(String email) {
+        Map<String,Object> map = new HashMap<>();
+
         Optional<User> userOptional = userRepo.findByEmail(email);
         if (userOptional.isEmpty()) {
-            return new ResponseEntity<String>("User not found with given details !! "+email, HttpStatus.NOT_FOUND);
+            map.put("message","User not found with given details");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return new ResponseEntity<String>("User not found with given details !! "+email, HttpStatus.NOT_FOUND);
         }
         User user = userOptional.get();
         UserResponse resp = CommonMethods.createUserResponse(user);
-        return new ResponseEntity<>(resp, HttpStatus.OK);
+        map.put("message",resp);
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     public ResponseEntity<?> search_UserByMobile(String contactNum) {
@@ -93,8 +101,8 @@ public class UserReportService {
         return ResponseEntity.ok(resp);
     }
 
-    public ResponseEntity<?> search_UserReportingMe(String email) {
-        List<User> user = userRepo.findByReportingmanagerId(email);
+    public ResponseEntity<?> search_UserReportingMe(Long id) {
+        List<User> user = userRepo.findByReportingmanagerId(id);
         ArrayList<UserReportResp> resp= new ArrayList<>();
         user.stream().forEach(i-> resp.add(getUserReportResponse(i)));
         return ResponseEntity.ok(resp);
@@ -114,5 +122,22 @@ public class UserReportService {
         Map<Integer, String> TeamMap = new HashMap<>();
         mbpTeams.forEach(i -> TeamMap.put(i.getId(), i.getName()));
         return TeamMap;
+    }
+
+    public ResponseEntity<?> search_findUserId(Long id) {
+        Map<String,Object> map = new HashMap<>();
+
+        Optional<User> userOptional= userRepo.findById(id);
+        if (userOptional.isEmpty()) {
+            map.put("message","User not found !!");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+        }
+        User user = userOptional.get();
+        UserResponse resp = CommonMethods.createUserResponse(user);
+
+        map.put("message",resp);
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }

@@ -20,12 +20,6 @@ public class UserReportsController {
         this.userReportService = userReportService;
     }
 
-    /*
-    @GetMapping("/Secured/MBP/Login/findByCode")
-    public ResponseEntity<?> search_UserByCode(@RequestParam String code) {
-        return userReportService.search_UserByCode(code);
-    } */
-
     @GetMapping("/Secured/MBP/Login/findByEmail")
     public ResponseEntity<?> search_UserByEmail(@RequestParam String email) {
         return userReportService.search_UserByEmail(email);
@@ -37,8 +31,13 @@ public class UserReportsController {
     }
 
     @GetMapping("/Secured/MBP/Login/findUserReportingMe")
-    public ResponseEntity<?> search_UserReportingMe(@RequestParam String email) {
-        return userReportService.search_UserReportingMe(email);
+    public ResponseEntity<?> search_UserReportingMe(@RequestParam Long id) {
+        return userReportService.search_UserReportingMe(id);
+    }
+
+    @GetMapping("/Secured/MBP/Login/findUserId")
+    public ResponseEntity<?> search_findUserId(@RequestParam Long id) {
+        return userReportService.search_findUserId(id);
     }
 
     @GetMapping("/Secured/MBP/Login/countries")

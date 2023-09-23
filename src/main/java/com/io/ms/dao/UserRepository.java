@@ -19,5 +19,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.contactNum1 LIKE %:contactNum% OR u.contactNum2 LIKE %:contactNum%")
     List<User> findByContactNumContainingSubstring(@Param("contactNum") String contactNum);
 
-    List<User> findByReportingmanagerId(String email);
+    List<User> findByReportingmanagerId(Long id);
 }

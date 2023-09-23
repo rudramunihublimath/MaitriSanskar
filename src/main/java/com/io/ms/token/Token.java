@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDate;
 
 @Data
 @Builder
@@ -27,6 +30,10 @@ public class Token {
   public boolean revoked;
 
   public boolean expired;
+
+  @CreationTimestamp
+  @Column(name = "createdAt",updatable = false)
+  private LocalDate createdDate;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")

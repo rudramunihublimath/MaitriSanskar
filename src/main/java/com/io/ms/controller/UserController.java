@@ -48,9 +48,9 @@ public class UserController {
     }
 
     @PutMapping(value = "/Secured/MBP/Login/UpdateNOTActive")
-    public ResponseEntity<?> updateUserNOTActive(@RequestParam String userEmail,
-                                                 @RequestParam String managerEmail)  {
-        return loginService.updateUserNOTActive(userEmail,managerEmail);
+    public ResponseEntity<?> updateUserNOTActive(@RequestParam Long userId,
+                                                 @RequestParam Long managerId)  {
+        return loginService.updateUserNOTActive(userId,managerId);
     }
 
 }

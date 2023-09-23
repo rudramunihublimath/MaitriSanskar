@@ -8,6 +8,7 @@ public class CommonMethods {
 
     public static UserResponse createUserResponse(User user) {
         UserResponse resp = new UserResponse();
+        resp.setId(user.getId());
         resp.setMbpcode(user.getCode());
         resp.setFirstname(user.getFirstname());
         resp.setLastname(user.getLastname());
