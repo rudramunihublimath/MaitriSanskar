@@ -47,5 +47,5 @@ public class SchoolMBPMeetingRequest {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schoolNameRequest_id")
-    public SchoolNameRequest schoolNameRequest;
+    public SchoolNameRequest schoolNmReq;
 }

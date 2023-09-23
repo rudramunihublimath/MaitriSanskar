@@ -12,10 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +25,8 @@ public class SchoolMBPMeetingService {
     private final SchoolNameRepo schoolNameRepo;
 
     public ResponseEntity<?> addSchoolMBPMeeting(SchoolMBPMeetingRequest payload) {
+        Map<String,Object> map = new HashMap<>();
+
         SchoolMBPMeetingRequest req= new SchoolMBPMeetingRequest();
         req.setMeetingDateTime(payload.getMeetingDateTime());
         req.setNextAppointment(payload.getNextAppointment());
@@ -37,13 +36,22 @@ public class SchoolMBPMeetingService {
         req.setCreatedDate(payload.getCreatedDate());
         req.setUpdatedDate(payload.getUpdatedDate());
         schoolMBPMeetingRepo.save(payload);
-        return ResponseEntity.ok("School Meeting info is added ");
+
+        map.put("message","School Meeting info is added");
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
+        //return ResponseEntity.ok("School Meeting info is added ");
     }
 
     public ResponseEntity<?> editSchoolMBPMeeting(SchoolMBPMeetingRequest payload) {
+        Map<String,Object> map = new HashMap<>();
+
         Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(payload.getId());
         if (schoolOptional.isEmpty()) {
-            return new ResponseEntity<String>("School name not found !! ", HttpStatus.NOT_FOUND);
+            map.put("message","School name not found !!");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return new ResponseEntity<String>("School name not found !! ", HttpStatus.NOT_FOUND);
         }
 
         SchoolMBPMeetingRequest req= new SchoolMBPMeetingRequest();
@@ -56,11 +64,15 @@ public class SchoolMBPMeetingService {
         req.setCreatedDate(payload.getCreatedDate());
         req.setUpdatedDate(payload.getUpdatedDate());
         schoolMBPMeetingRepo.save(req);
-        return ResponseEntity.ok("School Meeting info is updated ");
+
+        map.put("message","School Meeting info is updated");
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
+        //return ResponseEntity.ok("School Meeting info is updated ");
     }
 
     public ResponseEntity<?> findSchoolMBPMeeting(Long id) {
-        List<SchoolMBPMeetingRequest> poc = schoolMBPMeetingRepo.findBySchoolNameRequest_id(id);
+        List<SchoolMBPMeetingRequest> poc = schoolMBPMeetingRepo.findBySchoolNmReq_id(id);
         ArrayList<SchoolMBPMeetingResponse> resp= new ArrayList<>();
         poc.stream().forEach(i-> resp.add(getSchoolMeetingResponse(i)));
         return ResponseEntity.ok(resp);

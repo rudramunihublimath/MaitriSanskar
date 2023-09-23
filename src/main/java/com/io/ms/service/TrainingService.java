@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -23,6 +25,8 @@ public class TrainingService {
     private final SchoolNameRepo schoolNameRepo;
 
     public ResponseEntity<?> addTraining(TrainingRequest payload, Long schoolId) {
+        Map<String,Object> map = new HashMap<>();
+
         Optional<SchoolNameRequest> schoolNameRequestOptional = schoolNameRepo.findById(schoolId);
 
         if (schoolNameRequestOptional.isPresent()) {
@@ -36,15 +40,24 @@ public class TrainingService {
             req.setDataValidated("No");
             req.setTrainRequest(schoolNameRequest);
             trainingRepo.save(req);
-            return ResponseEntity.ok("Training info is added ");
+
+            map.put("message","Training info is added");
+            map.put("status",true);
+            return new ResponseEntity<>(map, HttpStatus.OK);
+            //return ResponseEntity.ok("Training info is added ");
         }
         else {
             // Handle the case where the specified SchoolNameRequest does not exist
-            return ResponseEntity.badRequest().body("School with ID " + schoolId + " not found");
+            map.put("message","School with ID " + schoolId + " not found");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return ResponseEntity.badRequest().body("School with ID " + schoolId + " not found");
         }
     }
 
     public ResponseEntity<?> editTraining(TrainingRequest payload,Long schoolId) {
+        Map<String,Object> map = new HashMap<>();
+
         Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
         if (schoolOptional.isPresent()) {
             SchoolNameRequest schoolNameRequest = schoolOptional.get();
@@ -58,18 +71,30 @@ public class TrainingService {
             req.setDataValidated(payload.getDataValidated());
             req.setTrainRequest(schoolNameRequest);
             trainingRepo.save(req);
-            return ResponseEntity.ok("Training info is Updated ");
+
+            map.put("message","Training info is Updated");
+            map.put("status",true);
+            return new ResponseEntity<>(map, HttpStatus.OK);
+            //return ResponseEntity.ok("Training info is Updated ");
         }
         else {
             // Handle the case where the specified SchoolNameRequest does not exist
-            return ResponseEntity.badRequest().body("School with ID " + schoolId + " not found");
+            map.put("message","School with ID " + schoolId + " not found");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return ResponseEntity.badRequest().body("School with ID " + schoolId + " not found");
         }
     }
 
     public ResponseEntity<?> findTraining(Long schoolId) {
+        Map<String,Object> map = new HashMap<>();
+
         Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
         if (schoolOptional.isEmpty()) {
-            return new ResponseEntity<String>("School details not found !! ", HttpStatus.NOT_FOUND);
+            map.put("message","School details not found !!");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return new ResponseEntity<String>("School details not found !! ", HttpStatus.NOT_FOUND);
         }
         TrainingRequest req = schoolOptional.get().getTrainingRequest();
 
@@ -80,7 +105,10 @@ public class TrainingService {
         resp.setTrainingPartCompleted(req.getTrainingPartCompleted());
         resp.setDateofCompletion(req.getDateofCompletion());
         resp.setDataValidated(req.getDataValidated());
-        return ResponseEntity.ok(resp);
+
+        map.put("message",resp);
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
 }

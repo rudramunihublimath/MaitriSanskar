@@ -16,9 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,8 +30,13 @@ public class SchoolPOCService {
     private final SchoolNameRepo schoolNameRepo;
 
     public ResponseEntity<?> addSchoolPOC(SchoolPOCRequest payload) {
+        Map<String,Object> map = new HashMap<>();
+
         if(schoolPOCRepo.existsByEmail(payload.getEmail())){
-            return ResponseEntity.badRequest().body("School POC is already registered with this email");
+            map.put("message","School POC is already registered with this email");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return ResponseEntity.badRequest().body("School POC is already registered with this email");
         }
         SchoolPOCRequest req= new SchoolPOCRequest();
         req.setTeacherfirstname(payload.getTeacherfirstname());
@@ -44,13 +47,22 @@ public class SchoolPOCService {
         req.setLinkdinID(payload.getLinkdinID());
         req.setEmail(payload.getEmail());
         schoolPOCRepo.save(payload);
-        return ResponseEntity.ok("School Point of contact added ");
+
+        map.put("message","School Point of contact added");
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
+        //return ResponseEntity.ok("School Point of contact added ");
     }
 
     public ResponseEntity<?> editSchoolPOC(SchoolPOCRequest payload) {
+        Map<String,Object> map = new HashMap<>();
+
         Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(payload.getId());
         if (schoolOptional.isEmpty()) {
-            return new ResponseEntity<String>("School name not found !! ", HttpStatus.NOT_FOUND);
+            map.put("message","School name not found !!");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return new ResponseEntity<String>("School name not found !! ", HttpStatus.NOT_FOUND);
         }
 
         SchoolPOCRequest req= new SchoolPOCRequest();
@@ -63,7 +75,11 @@ public class SchoolPOCService {
         req.setLinkdinID(payload.getLinkdinID());
         req.setEmail(payload.getEmail());
         schoolPOCRepo.save(payload);
-        return ResponseEntity.ok("School Point of contact updated ");
+
+        map.put("message","School Point of contact updated ");
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
+        //return ResponseEntity.ok("School Point of contact updated ");
     }
 
     public ResponseEntity<?> findSchoolPOC(Long id) {

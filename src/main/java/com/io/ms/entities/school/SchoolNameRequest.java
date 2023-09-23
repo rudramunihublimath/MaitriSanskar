@@ -35,6 +35,12 @@ public class SchoolNameRequest {
     @Column(name = "email", unique = true, nullable = false, length = 50)
     private String email;
 
+    @Column(name = "country", nullable = false, length = 15)
+    private String country;
+
+    @Column(name = "state", nullable = false, length = 20)
+    private String state;
+
     @Column(name = "city", nullable = false, length = 20)
     private String city;
 
@@ -47,8 +53,8 @@ public class SchoolNameRequest {
     @Column(name = "contactNum2", nullable = false, length = 20)
     private String contactNum2;
 
-    @Column(name = " chainofID", nullable = false, length = 300)
-    private List<String> chainofID;
+    @Column(name = " chainofID", nullable = true, length = 300)
+    private List<Long> chainofID;
 
     @Column(name = "address1", nullable = false, length = 60)
     private String address1;
@@ -100,7 +106,7 @@ public class SchoolNameRequest {
     @OneToMany(mappedBy = "schoolNameRequest")
     private List<SchoolPOCRequest> SchoolPOCRequest;
 
-    @OneToMany(mappedBy = "schoolNameRequest")
+    @OneToMany(mappedBy = "schoolNmReq")
     private List<SchoolMBPMeetingRequest> schoolMBPMeetingRequest;
 
     @OneToOne(mappedBy = "nameRequest", cascade = CascadeType.ALL, optional = true)

@@ -10,6 +10,6 @@ import java.util.List;
 
 
 public interface SchoolMBPMeetingRepo extends JpaRepository<SchoolMBPMeetingRequest, Serializable> {
-    List<SchoolMBPMeetingRequest> findBySchoolNameRequest_id(Long id);
+    List<SchoolMBPMeetingRequest> findBySchoolNmReq_id(Long id);
 
 }

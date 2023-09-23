@@ -24,9 +24,9 @@ public class SchoolNameController {
         return schoolNameService.registerSchoolName(payload);
     }
 
-    @GetMapping(value = "/Secured/MBP/School/FindSchoolByEmail")
-    public ResponseEntity<?> findSchoolByEmail(@RequestParam String email)  {
-        return schoolNameService.findSchoolByEmail(email);
+    @GetMapping(value = "/Secured/MBP/School/FindSchoolById")
+    public ResponseEntity<?> findSchoolById(@RequestParam Long id)  {
+        return schoolNameService.findSchoolById(id);
     }
 
     @PatchMapping(value = "/Secured/MBP/School/EditSchoolInfo")

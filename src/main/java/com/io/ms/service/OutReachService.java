@@ -13,9 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +26,8 @@ public class OutReachService {
     private final SchoolNameRepo schoolNameRepo;
 
     public ResponseEntity<?> addOutReach(OutReachRequest payload,Long schoolId) {
+        Map<String,Object> map = new HashMap<>();
+
         Optional<SchoolNameRequest> schoolNameRequestOptional = schoolNameRepo.findById(schoolId);
 
         if (schoolNameRequestOptional.isPresent()) {
@@ -40,15 +41,24 @@ public class OutReachService {
             req.setOutreach_completed("No");
             req.setNameRequest(schoolNameRequest);
             outReachRepo.save(req);
-            return ResponseEntity.ok("OutReach info is added ");
+
+            map.put("message","OutReach info is added");
+            map.put("status",true);
+            return new ResponseEntity<>(map, HttpStatus.OK);
+            //return ResponseEntity.ok("OutReach info is added ");
         }
         else {
             // Handle the case where the specified SchoolNameRequest does not exist
-            return ResponseEntity.badRequest().body("School with ID " + schoolId + " not found");
+            map.put("message","School with ID " + schoolId + " not found");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return ResponseEntity.badRequest().body("School with ID " + schoolId + " not found");
         }
     }
 
     public ResponseEntity<?> editOutReach(OutReachRequest payload,Long schoolId) {
+        Map<String,Object> map = new HashMap<>();
+
         Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
         if (schoolOptional.isPresent()) {
             SchoolNameRequest schoolNameRequest = schoolOptional.get();
@@ -62,18 +72,30 @@ public class OutReachService {
             req.setOutreach_completed(payload.getOutreach_completed());
             req.setNameRequest(schoolNameRequest);
             outReachRepo.save(req);
-            return ResponseEntity.ok("OutReach info is Updated ");
+
+            map.put("message","OutReach info is Updated");
+            map.put("status",true);
+            return new ResponseEntity<>(map, HttpStatus.OK);
+            //return ResponseEntity.ok("OutReach info is Updated ");
         }
         else {
             // Handle the case where the specified SchoolNameRequest does not exist
-            return ResponseEntity.badRequest().body("School with ID " + schoolId + " not found");
+            map.put("message","School with ID " + schoolId + " not found");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return ResponseEntity.badRequest().body("School with ID " + schoolId + " not found");
         }
     }
 
     public ResponseEntity<?> findOutReach(Long schoolId) {
+        Map<String,Object> map = new HashMap<>();
+
         Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
         if (schoolOptional.isEmpty()) {
-            return new ResponseEntity<String>("School details not found !! ", HttpStatus.NOT_FOUND);
+            map.put("message","School details not found");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return new ResponseEntity<String>("School details not found !! ", HttpStatus.NOT_FOUND);
         }
         OutReachRequest req = schoolOptional.get().getOutReachRequest();
 
@@ -84,8 +106,10 @@ public class OutReachService {
         resp.setOutreachheaduserid(req.getOutreachheaduserid());
         resp.setOutreachHead_assigneddate(req.getOutreachHead_assigneddate());
         resp.setOutreach_completed(req.getOutreach_completed());
-        //return new ResponseEntity<>(req, HttpStatus.OK);
-        return ResponseEntity.ok(resp);
+
+        map.put("message",resp);
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
 }

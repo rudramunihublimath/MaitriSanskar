@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -22,14 +24,20 @@ public class SchoolNameService {
     private final SchoolNameRepo schoolNameRepo;
 
     public ResponseEntity<?> registerSchoolName(SchoolNameRequest payload) {
+        Map<String,Object> map = new HashMap<>();
+
         // validated if emailID already present
         if(schoolNameRepo.existsByEmail(payload.getEmail())){
-            return ResponseEntity.badRequest().body("School is already registered with this email");
+            map.put("message","School is already registered with this email");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
         }
 
         SchoolNameRequest sc=new SchoolNameRequest();
         sc.setName(payload.getName());
         sc.setEmail(payload.getEmail());
+        sc.setCountry(payload.getCountry());
+        sc.setState(payload.getState());
         sc.setCity(payload.getCity());
         sc.setBoard(payload.getBoard());
         sc.setContactNum1(payload.getContactNum1());
@@ -49,19 +57,28 @@ public class SchoolNameService {
         sc.setRefPersonName(payload.getRefPersonName());
         sc.setRefPersonContactNum(payload.getRefPersonContactNum());
         schoolNameRepo.save(sc);
-        return ResponseEntity.ok("School is registered");
+        map.put("message","School is registered");
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> findSchoolByEmail(String email) {
-        Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findByEmail(email);
+    public ResponseEntity<?> findSchoolById(Long id) {
+        Map<String,Object> map = new HashMap<>();
+
+        Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(id);
         if (schoolOptional.isEmpty()) {
-            return new ResponseEntity<String>("School details not found !! ", HttpStatus.NOT_FOUND);
+            map.put("message","School details not found !!");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return new ResponseEntity<String>("School details not found !! ", HttpStatus.NOT_FOUND);
         }
         SchoolNameRequest req = schoolOptional.get();
         SchoolNameResponse sc= new SchoolNameResponse();
         sc.setId(req.getId());
         sc.setName(req.getName());
         sc.setEmail(req.getEmail());
+        sc.setCountry(req.getCountry());
+        sc.setState(req.getState());
         sc.setCity(req.getCity());
         sc.setBoard(req.getBoard());
         sc.setContactNum1(req.getContactNum1());
@@ -82,13 +99,21 @@ public class SchoolNameService {
         sc.setRefPersonContactNum(req.getRefPersonContactNum());
         sc.setCreatedDate(req.getCreatedDate());
         sc.setUpdatedDate(req.getUpdatedDate());
-        return new ResponseEntity<>(sc, HttpStatus.OK);
+        map.put("message",sc);
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
+        //return new ResponseEntity<>(sc, HttpStatus.OK);
     }
 
     public ResponseEntity<?> editSchoolInfo(SchoolNameRequest payload) {
-        Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findByEmail(payload.getEmail());
+        Map<String,Object> map = new HashMap<>();
+
+        Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(payload.getId());
         if (schoolOptional.isEmpty()) {
-            return new ResponseEntity<String>("School details not found !! ", HttpStatus.NOT_FOUND);
+            map.put("message","School details not found !!");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+            //return new ResponseEntity<String>("School details not found !! ", HttpStatus.NOT_FOUND);
         }
 
         SchoolNameRequest sc = schoolOptional.get();
@@ -113,6 +138,8 @@ public class SchoolNameService {
         sc.setRefPersonName(payload.getRefPersonName());
         sc.setRefPersonContactNum(payload.getRefPersonContactNum());
         schoolNameRepo.save(sc);
-        return ResponseEntity.ok("School Information is updated ");
+        map.put("message","School Information is updated ");
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }

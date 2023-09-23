@@ -84,7 +84,6 @@ public class SecurityConfiguration {
           "/swagger-resources/**",
           "/v2/api-docs",
           "/v3/api-docs",
-          "/api-docs/**",
-          "/1Secured/**"
+          "/api-docs/**"
   };
 }

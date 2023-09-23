@@ -22,11 +22,13 @@ public class SchoolNameResponse {
     private Long id;
     private String name;
     private String email;
+    private String country;
+    private String state;
     private String city;
     private List<String> board;
     private String contactNum1;
     private String contactNum2;
-    private List<String> chainofID;
+    private List<Long> chainofID;
     private String address1;
     private String address2;
     private String pincode;

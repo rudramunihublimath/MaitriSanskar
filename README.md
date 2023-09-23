@@ -48,11 +48,4 @@ Insert Into mbp.TargetPhase Values(1,'MiniPilot');
 Insert Into mbp.TargetPhase Values(2,'Pilot');
 
 ------------\n
-Help :
-.requestMatchers(HttpMethod.POST, "/api/users").permitAll()
-.requestMatchers(HttpMethod.GET, "/api/users/login", "/api/users/{username}", "/api/users/logout", "/api/customers", "/api/storages").authenticated()
-.requestMatchers(HttpMethod.POST, "/api/customers", "/api/storages").authenticated()
-.requestMatchers(HttpMethod.PUT, "/api/customers/{id}", "/api/storages/{id}").authenticated()
-.requestMatchers(HttpMethod.DELETE, "/api/users/{id}", "/api/storages/{id}", "/api/customers/{id}").authenticated()
 
-------------\n
