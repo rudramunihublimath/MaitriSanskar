@@ -1,6 +1,9 @@
 package com.io.ms.service;
 
+import com.io.ms.dao.SchoolBoardRepo;
 import com.io.ms.dao.SchoolNameRepo;
+import com.io.ms.entities.login.MBPTeams;
+import com.io.ms.entities.school.SchoolBoard;
 import com.io.ms.entities.school.SchoolNameRequest;
 import com.io.ms.entities.school.SchoolNameResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -22,6 +26,8 @@ public class SchoolNameService {
     private static Logger logger = LoggerFactory.getLogger(SchoolNameService.class);
     @Autowired
     private final SchoolNameRepo schoolNameRepo;
+    @Autowired
+    private final SchoolBoardRepo boardRepo;
 
     public ResponseEntity<?> registerSchoolName(SchoolNameRequest payload) {
         Map<String,Object> map = new HashMap<>();
@@ -141,5 +147,12 @@ public class SchoolNameService {
         map.put("message","School Information is updated ");
         map.put("status",true);
         return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+    public Map<Integer, String> getSchoolBoard() {
+        List<SchoolBoard> board = boardRepo.findAll();
+        Map<Integer, String> TeamMap = new HashMap<>();
+        board.forEach(i -> TeamMap.put(i.getId(), i.getName()));
+        return TeamMap;
     }
 }

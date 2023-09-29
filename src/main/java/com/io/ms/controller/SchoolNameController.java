@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -34,7 +36,10 @@ public class SchoolNameController {
         return schoolNameService.editSchoolInfo(payload);
     }
 
-
+    @GetMapping("/Secured/MBP/School/FindSchoolBoard")
+    public Map<Integer, String> getMBPTeam() {
+        return schoolNameService.getSchoolBoard();
+    }
 
 
 }

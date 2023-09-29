@@ -15,6 +15,7 @@
    SELECT * FROM mbp.outreach;
    SELECT * FROM mbp.training;
    SELECT * FROM mbp.MBPFlags;
+   select * from mbp.SchoolBoard;
 
  ------------\n
 3) Static data inserted in tables :
