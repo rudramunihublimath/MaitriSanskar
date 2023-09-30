@@ -71,34 +71,69 @@ public class MBPFlagsService {
         if (schoolOptional.isPresent()) {
             SchoolNameRequest schoolNameRequest = schoolOptional.get();
 
-            MBPFlagsRequest req = new MBPFlagsRequest();
-            req.setId(payload.getId());
-            req.setAgreementCompleted(payload.getAgreementCompleted());
-            req.setAgreementCompletedDate(payload.getAgreementCompletedDate());
-            req.setAgreementScanCopyLink(payload.getAgreementScanCopyLink());
-            req.setUploadedByUserId(payload.getUploadedByUserId());
-            req.setSchoolActive(payload.getSchoolActive());
-            req.setSchoolInterested(payload.getSchoolInterested());
-            req.setDealClosed(payload.getDealClosed());
-            req.setIsDiscontinued(payload.getIsDiscontinued());
-            req.setDiscontinuedDate(payload.getDiscontinuedDate());
-            req.setReasonForDiscontinue(payload.getReasonForDiscontinue());
-            req.setReasonValidated(payload.getReasonValidated());
+            // Check if there is an existing MBPFlagsRequest for the school
+            Optional<MBPFlagsRequest> existingMBPFlagsOptional = mbpFlagsRepo.findById(schoolId);
+            if (existingMBPFlagsOptional.isPresent()) {
+                MBPFlagsRequest existingMBPFlags = existingMBPFlagsOptional.get();
 
-            req.setMbpFlagsReq(schoolNameRequest);
-            mbpFlagsRepo.save(req);
+                // Update the properties based on the payload
+                //existingMBPFlags.setId(payload.getId());
 
-            map.put("message","MBPFlags info is Updated");
-            map.put("status",true);
-            return new ResponseEntity<>(map, HttpStatus.OK);
-            //return ResponseEntity.ok("MBPFlags info is Updated ");
+                Optional<String> agreementCompleted = Optional.ofNullable(payload.getAgreementCompleted());
+                agreementCompleted.ifPresent(payloadValue -> {
+                    if (payloadValue.equals("Yes")) {
+                        // Do something when payloadValue is "Yes"
+                        System.out.println("Email Sent to school "+schoolNameRequest.getEmail());
+                        existingMBPFlags.setAgreementCompleted("Yes");
+                    } else {
+                        // Do something when payloadValue is not "Yes"
+                        existingMBPFlags.setAgreementCompleted("No");
+                    }
+                });
+
+                /*
+                existingMBPFlags.setAgreementCompletedDate(payload.getAgreementCompletedDate());
+                existingMBPFlags.setAgreementScanCopyLink(payload.getAgreementScanCopyLink());
+                existingMBPFlags.setUploadedByUserId(payload.getUploadedByUserId());
+                existingMBPFlags.setSchoolActive(payload.getSchoolActive());
+                existingMBPFlags.setSchoolInterested(payload.getSchoolInterested());  */
+
+                Optional<String>  dealClosed = Optional.ofNullable(payload.getDealClosed());
+                dealClosed.ifPresent(payloadValue -> {
+                    if (payloadValue.equals("Yes")) {
+                        // Do something when payloadValue is "Yes"
+                        System.out.println("Email Sent to Training Team ");
+                        existingMBPFlags.setDealClosed("Yes");
+                    } else {
+                        // Do something when payloadValue is not "Yes"
+                        existingMBPFlags.setDealClosed("No");
+                    }
+                });
+
+                /*
+                existingMBPFlags.setIsDiscontinued(payload.getIsDiscontinued());
+                existingMBPFlags.setDiscontinuedDate(payload.getDiscontinuedDate());
+                existingMBPFlags.setReasonForDiscontinue(payload.getReasonForDiscontinue());
+                existingMBPFlags.setReasonValidated(payload.getReasonValidated()); */
+
+                existingMBPFlags.setMbpFlagsReq(schoolNameRequest);
+                mbpFlagsRepo.save(existingMBPFlags);
+
+                map.put("message","MBPFlags info is Updated");
+                map.put("status",true);
+                return new ResponseEntity<>(map, HttpStatus.OK);
+
+            }else {
+                map.put("message", "MBPFlags data for School with ID " + schoolId + " not found");
+                map.put("status", false);
+                return ResponseEntity.badRequest().body(map);
+            }
         }
         else {
             // Handle the case where the specified SchoolNameRequest does not exist
             map.put("message","School with ID " + schoolId + " not found");
             map.put("status",false);
             return ResponseEntity.badRequest().body(map);
-            //return ResponseEntity.badRequest().body("School with ID " + schoolId + " not found");
         }
     }
 

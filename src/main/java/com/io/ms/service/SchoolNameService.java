@@ -2,10 +2,12 @@ package com.io.ms.service;
 
 import com.io.ms.dao.SchoolBoardRepo;
 import com.io.ms.dao.SchoolNameRepo;
+import com.io.ms.dao.TargetPhaseRepo;
 import com.io.ms.entities.login.MBPTeams;
 import com.io.ms.entities.school.SchoolBoard;
 import com.io.ms.entities.school.SchoolNameRequest;
 import com.io.ms.entities.school.SchoolNameResponse;
+import com.io.ms.entities.school.TargetPhase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class SchoolNameService {
     private final SchoolNameRepo schoolNameRepo;
     @Autowired
     private final SchoolBoardRepo boardRepo;
+
+    @Autowired
+    private final TargetPhaseRepo targetPhaseRepo;
 
     public ResponseEntity<?> registerSchoolName(SchoolNameRequest payload) {
         Map<String,Object> map = new HashMap<>();
@@ -153,6 +158,13 @@ public class SchoolNameService {
         List<SchoolBoard> board = boardRepo.findAll();
         Map<Integer, String> TeamMap = new HashMap<>();
         board.forEach(i -> TeamMap.put(i.getId(), i.getName()));
+        return TeamMap;
+    }
+
+    public Map<Integer, String> getTargetPhase() {
+        List<TargetPhase> tPhase = targetPhaseRepo.findAll();
+        Map<Integer, String> TeamMap = new HashMap<>();
+        tPhase.forEach(i -> TeamMap.put(i.getId(), i.getName()));
         return TeamMap;
     }
 }

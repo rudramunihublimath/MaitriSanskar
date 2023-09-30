@@ -37,8 +37,13 @@ public class SchoolNameController {
     }
 
     @GetMapping("/Secured/MBP/School/FindSchoolBoard")
-    public Map<Integer, String> getMBPTeam() {
+    public Map<Integer, String> getSchoolBoard() {
         return schoolNameService.getSchoolBoard();
+    }
+
+    @GetMapping("/Secured/MBP/School/FindTargetPhase")
+    public Map<Integer, String> getTargetPhase() {
+        return schoolNameService.getTargetPhase();
     }
 
 
