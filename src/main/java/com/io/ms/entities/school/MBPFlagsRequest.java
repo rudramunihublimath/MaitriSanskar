@@ -19,7 +19,7 @@ public class MBPFlagsRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "agreementCompleted", nullable = true,length = 50)
+   /* @Column(name = "agreementCompleted", nullable = true,length = 50)
     private String agreementCompleted;
 
     @Column(name = "agreementCompletedDate", nullable = true, length = 30)
@@ -29,7 +29,7 @@ public class MBPFlagsRequest {
     private String agreementScanCopyLink;
 
     @Column(name = "uploadedByUserId", nullable = true,length = 60)
-    private String uploadedByUserId;
+    private String uploadedByUserId; */
 
     @Column(name = "schoolActive", nullable = true,length = 5)
     private String schoolActive;

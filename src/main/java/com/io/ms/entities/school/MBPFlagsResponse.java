@@ -13,10 +13,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class MBPFlagsResponse {
     private Long id;
-    private String agreementCompleted;
+    /*private String agreementCompleted;
     private LocalDate agreementCompletedDate;
     private String agreementScanCopyLink;
-    private String uploadedByUserId;
+    private String uploadedByUserId; */
     private String schoolActive;
     private String schoolInterested;
     private String dealClosed;

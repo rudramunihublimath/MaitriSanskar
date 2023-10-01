@@ -53,9 +53,4 @@ public class SchoolNameController {
     }
 
 
-    @GetMapping(value = "/Secured/MBP/School/FindCompleteSchoolInfoById")
-    public ResponseEntity<?> findCompleteSchoolInfoById(@RequestParam Long id)  {
-        return schoolNameService.findCompleteSchoolInfoById(id);
-    }
-
 }

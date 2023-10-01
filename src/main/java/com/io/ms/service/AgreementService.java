@@ -1,9 +1,11 @@
 package com.io.ms.service;
 
 
-import com.io.ms.dao.MBPFlagsRepo;
+import com.io.ms.dao.AgreementRepo;
 import com.io.ms.dao.SchoolNameRepo;
-import com.io.ms.entities.school.*;
+import com.io.ms.entities.school.AgreementRequest;
+import com.io.ms.entities.school.AgreementResponse;
+import com.io.ms.entities.school.SchoolNameRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,14 +20,14 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class MBPFlagsService {
-    private static Logger logger = LoggerFactory.getLogger(MBPFlagsService.class);
+public class AgreementService {
+    private static Logger logger = LoggerFactory.getLogger(AgreementService.class);
     @Autowired
-    private final MBPFlagsRepo mbpFlagsRepo;
+    private final AgreementRepo agreementRepo;
     @Autowired
     private final SchoolNameRepo schoolNameRepo;
 
-    public ResponseEntity<?> addMBPFlagInfo(MBPFlagsRequest payload, Long schoolId) {
+    public ResponseEntity<?> addAgreementInfo(AgreementRequest payload, Long schoolId) {
         Map<String,Object> map = new HashMap<>();
 
         Optional<SchoolNameRequest> schoolNameRequestOptional = schoolNameRepo.findById(schoolId);
@@ -33,36 +35,28 @@ public class MBPFlagsService {
         if (schoolNameRequestOptional.isPresent()) {
             SchoolNameRequest schoolNameRequest = schoolNameRequestOptional.get();
 
-            MBPFlagsRequest req = new MBPFlagsRequest();
-            /*req.setAgreementCompleted("No");
+            AgreementRequest req = new AgreementRequest();
+            req.setAgreementCompleted("No");
             req.setAgreementCompletedDate(payload.getAgreementCompletedDate());
             req.setAgreementScanCopyLink(payload.getAgreementScanCopyLink());
-            req.setUploadedByUserId(payload.getUploadedByUserId()); */
-            req.setSchoolActive(payload.getSchoolActive());
-            req.setSchoolInterested(payload.getSchoolInterested());
-            req.setDealClosed("No");
-            req.setIsDiscontinued("No");
-            req.setDiscontinuedDate(payload.getDiscontinuedDate());
-            req.setReasonForDiscontinue(payload.getReasonForDiscontinue());
-            req.setReasonValidated(payload.getReasonValidated());
-            req.setMbpFlagsReq(schoolNameRequest);
-            mbpFlagsRepo.save(req);
+            req.setUploadedByUserId(payload.getUploadedByUserId());
 
-            map.put("message","MBPFlags info is added");
+            req.setAgreementReq(schoolNameRequest);
+            agreementRepo.save(req);
+
+            map.put("message","Agreement info is added");
             map.put("status",true);
             return new ResponseEntity<>(map, HttpStatus.OK);
-            //return ResponseEntity.ok("MBPFlags info is added ");
         }
         else {
             // Handle the case where the specified SchoolNameRequest does not exist
             map.put("message","School with ID " + schoolId + " not found");
             map.put("status",false);
             return ResponseEntity.badRequest().body(map);
-            //return ResponseEntity.badRequest().body("School with ID " + schoolId + " not found");
         }
     }
 
-    public ResponseEntity<?> editMBPFlagInfo(MBPFlagsRequest payload,Long schoolId) {
+    public ResponseEntity<?> editAgreementInfo(AgreementRequest payload,Long schoolId) {
         Map<String,Object> map = new HashMap<>();
 
         Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
@@ -70,35 +64,31 @@ public class MBPFlagsService {
             SchoolNameRequest schoolNameRequest = schoolOptional.get();
 
             // Check if there is an existing MBPFlagsRequest for the school
-            Optional<MBPFlagsRequest> existingMBPFlagsOptional = mbpFlagsRepo.findById(schoolId);
-            if (existingMBPFlagsOptional.isPresent()) {
-                MBPFlagsRequest req = existingMBPFlagsOptional.get();
+            Optional<AgreementRequest> agreementRequestOptional = agreementRepo.findById(schoolId);
+            if (agreementRequestOptional.isPresent()) {
+                AgreementRequest req = agreementRequestOptional.get();
 
-                req.setSchoolActive(payload.getSchoolActive());
-                req.setSchoolInterested(payload.getSchoolInterested());
-
-                if (payload.getDealClosed().equals("Yes")) {
+                if (payload.getAgreementCompleted().equals("Yes")) {
                     // Do something when payloadValue is "Yes"
-                    System.out.println("Email Sent to Training Team ");
-                    req.setDealClosed("Yes");
+                    System.out.println("Email Sent to School "+schoolNameRequest.getEmail());
+                    req.setAgreementCompleted("Yes");
                 } else {
-                    req.setDealClosed("No");
+                    req.setAgreementCompleted("No");
                 }
 
-                req.setIsDiscontinued(payload.getIsDiscontinued());
-                req.setDiscontinuedDate(payload.getDiscontinuedDate());
-                req.setReasonForDiscontinue(payload.getReasonForDiscontinue());
-                req.setReasonValidated(payload.getReasonValidated());
+                req.setAgreementCompletedDate(payload.getAgreementCompletedDate());
+                req.setAgreementScanCopyLink(payload.getAgreementScanCopyLink());
+                req.setUploadedByUserId(payload.getUploadedByUserId());
 
-                req.setMbpFlagsReq(schoolNameRequest);
-                mbpFlagsRepo.save(req);
+                req.setAgreementReq(schoolNameRequest);
+                agreementRepo.save(req);
 
                 map.put("message","MBPFlags info is Updated");
                 map.put("status",true);
                 return new ResponseEntity<>(map, HttpStatus.OK);
 
             }else {
-                map.put("message", "MBPFlags data for School with ID " + schoolId + " not found");
+                map.put("message", "Agreement data for School with ID " + schoolId + " not found");
                 map.put("status", false);
                 return ResponseEntity.badRequest().body(map);
             }
@@ -111,35 +101,28 @@ public class MBPFlagsService {
         }
     }
 
-    public ResponseEntity<?> findMBPFlagInfo(Long schoolId) {
+    public ResponseEntity<?> findAgreementInfo(Long schoolId) {
         Map<String,Object> map = new HashMap<>();
 
         Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
         if (schoolOptional.isPresent()) {
             SchoolNameRequest school = schoolOptional.get();
-            MBPFlagsRequest req = school.getMbpFlagsRequest();
+            AgreementRequest req = school.getAgreementRequest();
 
             if (req!=null) {
-                MBPFlagsResponse resp = new MBPFlagsResponse();
+                AgreementResponse resp = new AgreementResponse();
                 resp.setId(req.getId());
-                /*resp.setAgreementCompleted(req.getAgreementCompleted());
+                resp.setAgreementCompleted(req.getAgreementCompleted());
                 resp.setAgreementCompletedDate(req.getAgreementCompletedDate());
                 resp.setAgreementScanCopyLink(req.getAgreementScanCopyLink());
-                resp.setUploadedByUserId(req.getUploadedByUserId()); */
-                resp.setSchoolActive(req.getSchoolActive());
-                resp.setSchoolInterested(req.getSchoolInterested());
-                resp.setDealClosed(req.getDealClosed());
-                resp.setIsDiscontinued(req.getIsDiscontinued());
-                resp.setDiscontinuedDate(req.getDiscontinuedDate());
-                resp.setReasonForDiscontinue(req.getReasonForDiscontinue());
-                resp.setReasonValidated(req.getReasonValidated());
+                resp.setUploadedByUserId(req.getUploadedByUserId());
 
                 map.put("message",resp);
                 map.put("status",true);
                 return new ResponseEntity<>(map, HttpStatus.OK);
             }
             else {
-                map.put("message", "MBPFlags data for School with ID " + schoolId + " not found");
+                map.put("message", "Agreement data for School with ID " + schoolId + " not found");
                 map.put("status", false);
                 return ResponseEntity.badRequest().body(map);
             }

@@ -1,8 +1,6 @@
 package com.io.ms.service;
 
-import com.io.ms.dao.SchoolBoardRepo;
-import com.io.ms.dao.SchoolNameRepo;
-import com.io.ms.dao.TargetPhaseRepo;
+import com.io.ms.dao.*;
 import com.io.ms.entities.login.MBPTeams;
 import com.io.ms.entities.login.UserReportResp;
 import com.io.ms.entities.school.*;
@@ -29,6 +27,17 @@ public class SchoolNameService {
 
     @Autowired
     private final TargetPhaseRepo targetPhaseRepo;
+
+    @Autowired
+    private final SchoolPOCRepo schoolPOCRepo;
+    @Autowired
+    private final SchoolMBPMeetingRepo schoolMBPMeetingRepo;
+    @Autowired
+    private final OutReachRepo outReachRepo;
+    @Autowired
+    private final TrainingRepo trainingRepo;
+    @Autowired
+    private final MBPFlagsRepo mbpFlagsRepo;
 
     public ResponseEntity<?> registerSchoolName(SchoolNameRequest payload) {
         Map<String,Object> map = new HashMap<>();
@@ -196,8 +205,5 @@ public class SchoolNameService {
     }
 
 
-    public ResponseEntity<?> findCompleteSchoolInfoById(Long id) {
 
-        return new ResponseEntity<>("", HttpStatus.OK);
-    }
 }

@@ -118,4 +118,7 @@ public class SchoolNameRequest {
     @OneToOne(mappedBy = "mbpFlagsReq", cascade = CascadeType.ALL, optional = true)
     private MBPFlagsRequest mbpFlagsRequest;
 
+    @OneToOne(mappedBy = "agreementReq", cascade = CascadeType.ALL, optional = true)
+    private AgreementRequest agreementRequest;
+
 }
