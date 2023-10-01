@@ -91,25 +91,35 @@ public class OutReachService {
         Map<String,Object> map = new HashMap<>();
 
         Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
-        if (schoolOptional.isEmpty()) {
-            map.put("message","School details not found");
+        if (schoolOptional.isPresent()) {
+            SchoolNameRequest school = schoolOptional.get();
+            OutReachRequest req = school.getOutReachRequest();
+
+            if (req!=null) {
+                OutReachResponse resp = new OutReachResponse();
+                resp.setId(req.getId());
+                resp.setOutreachuserid(req.getOutreachuserid());
+                resp.setOutreach_assigneddate(req.getOutreach_assigneddate());
+                resp.setOutreachheaduserid(req.getOutreachheaduserid());
+                resp.setOutreachHead_assigneddate(req.getOutreachHead_assigneddate());
+                resp.setOutreach_completed(req.getOutreach_completed());
+
+                map.put("message",resp);
+                map.put("status",true);
+                return new ResponseEntity<>(map, HttpStatus.OK);
+            }
+            else {
+                map.put("message", "OutReach data for School with ID " + schoolId + " not found");
+                map.put("status", false);
+                return ResponseEntity.badRequest().body(map);
+            }
+        }
+        else {
+            map.put("message","School with ID " + schoolId + " not found");
             map.put("status",false);
             return ResponseEntity.badRequest().body(map);
-            //return new ResponseEntity<String>("School details not found !! ", HttpStatus.NOT_FOUND);
         }
-        OutReachRequest req = schoolOptional.get().getOutReachRequest();
 
-        OutReachResponse resp = new OutReachResponse();
-        resp.setId(req.getId());
-        resp.setOutreachuserid(req.getOutreachuserid());
-        resp.setOutreach_assigneddate(req.getOutreach_assigneddate());
-        resp.setOutreachheaduserid(req.getOutreachheaduserid());
-        resp.setOutreachHead_assigneddate(req.getOutreachHead_assigneddate());
-        resp.setOutreach_completed(req.getOutreach_completed());
-
-        map.put("message",resp);
-        map.put("status",true);
-        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
 }

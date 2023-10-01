@@ -174,8 +174,12 @@ public class SchoolNameService {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        ArrayList<SchoolNameResponse2> resp= new ArrayList<>();
-        flattenedList.stream().forEach(i-> resp.add(getSchoolListResponse(i)));
+        //ArrayList<SchoolNameResponse2> resp= new ArrayList<>();
+        //flattenedList.stream().forEach(i-> resp.add(getSchoolListResponse(i)));
+
+        List<SchoolNameResponse2> resp = flattenedList.parallelStream() // Use parallelStream()
+                .map(this::getSchoolListResponse)
+                .collect(Collectors.toList());
 
         return ResponseEntity.ok(resp);
     }
@@ -192,4 +196,8 @@ public class SchoolNameService {
     }
 
 
+    public ResponseEntity<?> findCompleteSchoolInfoById(Long id) {
+
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
 }

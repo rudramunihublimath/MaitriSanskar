@@ -52,4 +52,10 @@ public class SchoolNameController {
         return schoolNameService.findAllSchoolInCity(cities);
     }
 
+
+    @GetMapping(value = "/Secured/MBP/School/FindCompleteSchoolInfoById")
+    public ResponseEntity<?> findCompleteSchoolInfoById(@RequestParam Long id)  {
+        return schoolNameService.findCompleteSchoolInfoById(id);
+    }
+
 }

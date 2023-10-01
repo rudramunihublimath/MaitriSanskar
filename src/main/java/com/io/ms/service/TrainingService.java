@@ -90,25 +90,35 @@ public class TrainingService {
         Map<String,Object> map = new HashMap<>();
 
         Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
-        if (schoolOptional.isEmpty()) {
-            map.put("message","School details not found !!");
+        if (schoolOptional.isPresent()) {
+            SchoolNameRequest school = schoolOptional.get();
+            TrainingRequest req = school.getTrainingRequest();
+
+            if (req!=null) {
+                TrainingResponse resp = new TrainingResponse();
+                resp.setId(req.getId());
+                resp.setTrainTheTrainersId(req.getTrainTheTrainersId());
+                resp.setTrainTheTrainerHeadId(req.getTrainTheTrainerHeadId());
+                resp.setTrainingPartCompleted(req.getTrainingPartCompleted());
+                resp.setDateofCompletion(req.getDateofCompletion());
+                resp.setDataValidated(req.getDataValidated());
+
+                map.put("message",resp);
+                map.put("status",true);
+                return new ResponseEntity<>(map, HttpStatus.OK);
+            }
+            else {
+                map.put("message", "Training data for School with ID " + schoolId + " not found");
+                map.put("status", false);
+                return ResponseEntity.badRequest().body(map);
+            }
+        }
+        else {
+            map.put("message","School with ID " + schoolId + " not found");
             map.put("status",false);
             return ResponseEntity.badRequest().body(map);
-            //return new ResponseEntity<String>("School details not found !! ", HttpStatus.NOT_FOUND);
         }
-        TrainingRequest req = schoolOptional.get().getTrainingRequest();
 
-        TrainingResponse resp = new TrainingResponse();
-        resp.setId(req.getId());
-        resp.setTrainTheTrainersId(req.getTrainTheTrainersId());
-        resp.setTrainTheTrainerHeadId(req.getTrainTheTrainerHeadId());
-        resp.setTrainingPartCompleted(req.getTrainingPartCompleted());
-        resp.setDateofCompletion(req.getDateofCompletion());
-        resp.setDataValidated(req.getDataValidated());
-
-        map.put("message",resp);
-        map.put("status",true);
-        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
 }

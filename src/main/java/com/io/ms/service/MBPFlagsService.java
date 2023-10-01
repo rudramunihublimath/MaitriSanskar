@@ -3,9 +3,7 @@ package com.io.ms.service;
 
 import com.io.ms.dao.MBPFlagsRepo;
 import com.io.ms.dao.SchoolNameRepo;
-import com.io.ms.entities.school.MBPFlagsRequest;
-import com.io.ms.entities.school.MBPFlagsResponse;
-import com.io.ms.entities.school.SchoolNameRequest;
+import com.io.ms.entities.school.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,32 +139,40 @@ public class MBPFlagsService {
         Map<String,Object> map = new HashMap<>();
 
         Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
-        if (schoolOptional.isEmpty()) {
-            map.put("message","School details not found !!");
+        if (schoolOptional.isPresent()) {
+            SchoolNameRequest school = schoolOptional.get();
+            MBPFlagsRequest req = school.getMbpFlagsRequest();
+
+            if (req!=null) {
+                MBPFlagsResponse resp = new MBPFlagsResponse();
+                resp.setId(req.getId());
+                resp.setAgreementCompleted(req.getAgreementCompleted());
+                resp.setAgreementCompletedDate(req.getAgreementCompletedDate());
+                resp.setAgreementScanCopyLink(req.getAgreementScanCopyLink());
+                resp.setUploadedByUserId(req.getUploadedByUserId());
+                resp.setSchoolActive(req.getSchoolActive());
+                resp.setSchoolInterested(req.getSchoolInterested());
+                resp.setDealClosed(req.getDealClosed());
+                resp.setIsDiscontinued(req.getIsDiscontinued());
+                resp.setDiscontinuedDate(req.getDiscontinuedDate());
+                resp.setReasonForDiscontinue(req.getReasonForDiscontinue());
+                resp.setReasonValidated(req.getReasonValidated());
+
+                map.put("message",resp);
+                map.put("status",true);
+                return new ResponseEntity<>(map, HttpStatus.OK);
+            }
+            else {
+                map.put("message", "MBPFlags data for School with ID " + schoolId + " not found");
+                map.put("status", false);
+                return ResponseEntity.badRequest().body(map);
+            }
+        }
+        else {
+            map.put("message","School with ID " + schoolId + " not found");
             map.put("status",false);
             return ResponseEntity.badRequest().body(map);
-            //return new ResponseEntity<String>("School details not found !! ", HttpStatus.NOT_FOUND);
         }
-        MBPFlagsRequest req = schoolOptional.get().getMbpFlagsRequest();
-
-        MBPFlagsResponse resp = new MBPFlagsResponse();
-        resp.setId(req.getId());
-        resp.setAgreementCompleted(req.getAgreementCompleted());
-        resp.setAgreementCompletedDate(req.getAgreementCompletedDate());
-        resp.setAgreementScanCopyLink(req.getAgreementScanCopyLink());
-        resp.setUploadedByUserId(req.getUploadedByUserId());
-        resp.setSchoolActive(req.getSchoolActive());
-        resp.setSchoolInterested(req.getSchoolInterested());
-        resp.setDealClosed(req.getDealClosed());
-        resp.setIsDiscontinued(req.getIsDiscontinued());
-        resp.setDiscontinuedDate(req.getDiscontinuedDate());
-        resp.setReasonForDiscontinue(req.getReasonForDiscontinue());
-        resp.setReasonValidated(req.getReasonValidated());
-
-        map.put("message",resp);
-        map.put("status",true);
-        return new ResponseEntity<>(map, HttpStatus.OK);
-        //return ResponseEntity.ok(resp);
     }
 
 }
