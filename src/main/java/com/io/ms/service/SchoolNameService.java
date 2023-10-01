@@ -4,10 +4,8 @@ import com.io.ms.dao.SchoolBoardRepo;
 import com.io.ms.dao.SchoolNameRepo;
 import com.io.ms.dao.TargetPhaseRepo;
 import com.io.ms.entities.login.MBPTeams;
-import com.io.ms.entities.school.SchoolBoard;
-import com.io.ms.entities.school.SchoolNameRequest;
-import com.io.ms.entities.school.SchoolNameResponse;
-import com.io.ms.entities.school.TargetPhase;
+import com.io.ms.entities.login.UserReportResp;
+import com.io.ms.entities.school.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +15,8 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -116,15 +112,14 @@ public class SchoolNameService {
         //return new ResponseEntity<>(sc, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> editSchoolInfo(SchoolNameRequest payload) {
+    public ResponseEntity<?> editSchoolInfo(Long schoolId,SchoolNameRequest payload) {
         Map<String,Object> map = new HashMap<>();
 
-        Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(payload.getId());
+        Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
         if (schoolOptional.isEmpty()) {
             map.put("message","School details not found !!");
             map.put("status",false);
             return ResponseEntity.badRequest().body(map);
-            //return new ResponseEntity<String>("School details not found !! ", HttpStatus.NOT_FOUND);
         }
 
         SchoolNameRequest sc = schoolOptional.get();
@@ -167,4 +162,34 @@ public class SchoolNameService {
         tPhase.forEach(i -> TeamMap.put(i.getId(), i.getName()));
         return TeamMap;
     }
+
+
+    public ResponseEntity<?> findAllSchoolInCity(List<String> cities) {
+        //List<SchoolNameRequest> byCity = schoolNameRepo.findByCity(cities);
+        List<List<SchoolNameRequest>> schoolLists = cities.stream()
+                .map(myCity -> schoolNameRepo.findByCity(myCity))
+                .collect(Collectors.toList());
+
+        List<SchoolNameRequest> flattenedList = schoolLists.stream()
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        ArrayList<SchoolNameResponse2> resp= new ArrayList<>();
+        flattenedList.stream().forEach(i-> resp.add(getSchoolListResponse(i)));
+
+        return ResponseEntity.ok(resp);
+    }
+
+    private SchoolNameResponse2 getSchoolListResponse(SchoolNameRequest req) {
+        SchoolNameResponse2 resp= new SchoolNameResponse2();
+        resp.setId(req.getId());
+        resp.setName(req.getName());
+        resp.setEmail(req.getEmail());
+        resp.setCity(req.getCity());
+        resp.setContactNum1(req.getContactNum1());
+        resp.setPincode(req.getPincode());
+        return resp;
+    }
+
+
 }

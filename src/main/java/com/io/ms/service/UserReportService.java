@@ -110,6 +110,7 @@ public class UserReportService {
 
     private UserReportResp getUserReportResponse(User user) {
         UserReportResp resp = new UserReportResp();
+        resp.setId(user.getId());
         resp.setFirstname(user.getFirstname());
         resp.setLastname(user.getLastname());
         resp.setEmail(user.getEmail());

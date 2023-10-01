@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -31,9 +32,9 @@ public class SchoolNameController {
         return schoolNameService.findSchoolById(id);
     }
 
-    @PatchMapping(value = "/Secured/MBP/School/EditSchoolInfo")
-    public ResponseEntity<?> editSchoolInfo(@RequestBody SchoolNameRequest payload)  {
-        return schoolNameService.editSchoolInfo(payload);
+    @PutMapping(value = "/Secured/MBP/School/EditSchoolInfo")
+    public ResponseEntity<?> editSchoolInfo(@RequestParam Long schoolId,@RequestBody SchoolNameRequest payload)  {
+        return schoolNameService.editSchoolInfo(schoolId,payload);
     }
 
     @GetMapping("/Secured/MBP/School/FindSchoolBoard")
@@ -46,5 +47,9 @@ public class SchoolNameController {
         return schoolNameService.getTargetPhase();
     }
 
+    @GetMapping(value = "/Secured/MBP/School/findAllSchoolInCity")
+    public ResponseEntity<?> findAllSchoolInCity(@RequestParam List<String> cities)  {
+        return schoolNameService.findAllSchoolInCity(cities);
+    }
 
 }

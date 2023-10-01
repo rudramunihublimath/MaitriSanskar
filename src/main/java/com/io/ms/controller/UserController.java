@@ -42,7 +42,7 @@ public class UserController {
         return loginService.changePassword(payload);
     }
 
-    @PatchMapping(value = "/Secured/MBP/Login/UpdateUserData")
+    @PutMapping(value = "/Secured/MBP/Login/UpdateUserData")
     public ResponseEntity<?> updateUserDetails(@RequestBody User payload)  {
         return loginService.updateUserDetails(payload);
     }

@@ -24,7 +24,7 @@ public class MBPFlagController {
     }
 
 
-    @PatchMapping(value = "/Secured/MBP/School/EditMBPFlagInfo")
+    @PutMapping(value = "/Secured/MBP/School/EditMBPFlagInfo")
     public ResponseEntity<?> editMBPFlagInfo(@RequestBody MBPFlagsRequest payload,@RequestParam Long schoolId)  {
         return mbpFlagsService.editMBPFlagInfo(payload,schoolId);
     }
