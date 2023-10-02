@@ -20,4 +20,5 @@ public class SchoolPOCResponse {
     private String contactNum2;
     private String linkdinID;
     private String email;
+    private String firstContact;
 }

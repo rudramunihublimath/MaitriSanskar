@@ -1,6 +1,7 @@
 package com.io.ms.controller;
 
 import com.io.ms.entities.school.MBPFlagsRequest;
+import com.io.ms.exception.UserAppException;
 import com.io.ms.service.MBPFlagsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,8 @@ public class MBPFlagController {
 
 
     @PutMapping(value = "/Secured/MBP/School/EditMBPFlagInfo")
-    public ResponseEntity<?> editMBPFlagInfo(@RequestBody MBPFlagsRequest payload,@RequestParam Long schoolId)  {
+    public ResponseEntity<?> editMBPFlagInfo(@RequestBody MBPFlagsRequest payload,@RequestParam Long schoolId)
+            throws UserAppException {
         return mbpFlagsService.editMBPFlagInfo(payload,schoolId);
     }
 

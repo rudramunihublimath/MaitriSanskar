@@ -42,6 +42,9 @@ public class SchoolPOCRequest {
     @Column(name = "email", nullable = false, length = 50)
     private String email;
 
+    @Column(name = "firstContact", length = 10)
+    private String firstContact;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schoolNameRequest_id")
     public SchoolNameRequest schoolNameRequest;

@@ -46,6 +46,7 @@ public class SchoolPOCService {
         req.setContactNum2(payload.getContactNum2());
         req.setLinkdinID(payload.getLinkdinID());
         req.setEmail(payload.getEmail());
+        req.setFirstContact(payload.getFirstContact());
         schoolPOCRepo.save(payload);
 
         map.put("message","School Point of contact added");
@@ -74,6 +75,7 @@ public class SchoolPOCService {
         req.setContactNum2(payload.getContactNum2());
         req.setLinkdinID(payload.getLinkdinID());
         req.setEmail(payload.getEmail());
+        req.setFirstContact(payload.getFirstContact());
         schoolPOCRepo.save(payload);
 
         map.put("message","School Point of contact updated ");
@@ -99,6 +101,7 @@ public class SchoolPOCService {
         resp.setContactNum2(req.getContactNum2());
         resp.setLinkdinID(req.getLinkdinID());
         resp.setEmail(req.getEmail());
+        resp.setFirstContact(req.getFirstContact());
         return resp;
     }
 }

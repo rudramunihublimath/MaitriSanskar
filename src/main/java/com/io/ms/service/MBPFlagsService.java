@@ -1,9 +1,15 @@
 package com.io.ms.service;
 
 
+import com.io.ms.constant.AppConstants;
 import com.io.ms.dao.MBPFlagsRepo;
 import com.io.ms.dao.SchoolNameRepo;
+import com.io.ms.dao.TrainingRepo;
 import com.io.ms.entities.school.*;
+import com.io.ms.exception.UserAppException;
+import com.io.ms.properties.AppProperties;
+import com.io.ms.utility.AESEncryption;
+import com.io.ms.utility.EmailUtils;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -23,7 +31,13 @@ public class MBPFlagsService {
     @Autowired
     private final MBPFlagsRepo mbpFlagsRepo;
     @Autowired
+    private final TrainingRepo trainingRepo;
+    @Autowired
     private final SchoolNameRepo schoolNameRepo;
+    @Autowired
+    private AppProperties appProps;
+    @Autowired
+    private EmailUtils emailUtils;
 
     public ResponseEntity<?> addMBPFlagInfo(MBPFlagsRequest payload, Long schoolId) {
         Map<String,Object> map = new HashMap<>();
@@ -62,7 +76,7 @@ public class MBPFlagsService {
         }
     }
 
-    public ResponseEntity<?> editMBPFlagInfo(MBPFlagsRequest payload,Long schoolId) {
+    public ResponseEntity<?> editMBPFlagInfo(MBPFlagsRequest payload,Long schoolId)  throws UserAppException{
         Map<String,Object> map = new HashMap<>();
 
         Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
@@ -79,8 +93,26 @@ public class MBPFlagsService {
 
                 if (payload.getDealClosed().equals("Yes")) {
                     // Do something when payloadValue is "Yes"
-                    System.out.println("Email Sent to Training Team ");
-                    req.setDealClosed("Yes");
+                    Optional<TrainingRequest> trOptional = trainingRepo.findById(schoolId);
+                    if (trOptional.isPresent()) {
+                        TrainingRequest trainingRequest = trOptional.get();
+                        String email=trainingRequest.getTrainTheTrainerHeadId();
+                        String emailBody = readTrainingEmailBody(schoolNameRequest);
+                        String subject = appProps.getMessages().get(AppConstants.TRAINING_EMAIL_SUB);
+                        try {
+                            emailUtils.sendEmail(email, subject, emailBody);
+                        } catch (Exception e) {
+                            logger.error(AppConstants.EXCEPTION_OCCURRED + e.getMessage(), e);
+                            throw new UserAppException(e.getMessage());
+                        }
+                        System.out.println("Email Sent to Training Team Head "+trainingRequest.getTrainTheTrainerHeadId());
+                        req.setDealClosed("Yes");
+                    }
+                    else{
+                        map.put("message","Training email ID not found");
+                        map.put("status",false);
+                        return new ResponseEntity<>(map, HttpStatus.OK);
+                    }
                 } else {
                     req.setDealClosed("No");
                 }
@@ -109,6 +141,29 @@ public class MBPFlagsService {
             map.put("status",false);
             return ResponseEntity.badRequest().body(map);
         }
+    }
+
+    private String readTrainingEmailBody(SchoolNameRequest req) throws UserAppException {
+        StringBuilder sb = new StringBuilder(AppConstants.EMPTY_STR);
+        String mailBody = AppConstants.EMPTY_STR;
+        String fileName = appProps.getMessages().get(AppConstants.TRAINING_EMAIL_BODY_FILE);
+        try (FileReader fr = new FileReader(fileName)) {
+            BufferedReader br = new BufferedReader(fr);
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                line = br.readLine();
+            }
+            br.close();
+            mailBody = sb.toString();
+            mailBody = mailBody.replace(AppConstants.SCHOOL_ID,String.valueOf(req.getId()));
+            mailBody = mailBody.replace(AppConstants.SCHOOL_NAME, req.getName());
+        } catch (Exception e) {
+            logger.error(AppConstants.EXCEPTION_OCCURRED + e.getMessage(), e);
+            throw new UserAppException(e.getMessage());
+        }
+        return mailBody;
     }
 
     public ResponseEntity<?> findMBPFlagInfo(Long schoolId) {
