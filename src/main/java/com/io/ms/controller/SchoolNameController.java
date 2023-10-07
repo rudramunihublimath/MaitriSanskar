@@ -48,7 +48,8 @@ public class SchoolNameController {
     }
 
     @GetMapping(value = "/Secured/MBP/School/findAllSchoolInCity")
-    public ResponseEntity<?> findAllSchoolInCity(@RequestParam List<String> cities)  {
+    //public ResponseEntity<?> findAllSchoolInCity(@RequestParam List<String> cities)  {
+    public ResponseEntity<?> findAllSchoolInCity(@RequestParam String cities)  {
         return schoolNameService.findAllSchoolInCity(cities);
     }
 

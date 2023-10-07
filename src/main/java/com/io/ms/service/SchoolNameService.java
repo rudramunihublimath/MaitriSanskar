@@ -173,9 +173,11 @@ public class SchoolNameService {
     }
 
 
-    public ResponseEntity<?> findAllSchoolInCity(List<String> cities) {
+    public ResponseEntity<?> findAllSchoolInCity(String cities) {
+        String[] cityArray = cities.split(",");
+
         //List<SchoolNameRequest> byCity = schoolNameRepo.findByCity(cities);
-        List<List<SchoolNameRequest>> schoolLists = cities.stream()
+        List<List<SchoolNameRequest>> schoolLists = Arrays.stream(cityArray)    //cities.stream()
                 .map(myCity -> schoolNameRepo.findByCity(myCity))
                 .collect(Collectors.toList());
 
