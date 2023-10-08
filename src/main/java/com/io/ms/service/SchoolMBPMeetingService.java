@@ -46,7 +46,8 @@ public class SchoolMBPMeetingService {
     public ResponseEntity<?> editSchoolMBPMeeting(SchoolMBPMeetingRequest payload) {
         Map<String,Object> map = new HashMap<>();
 
-        Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(payload.getId());
+        Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(payload.schoolNmReq.getId());
+        System.out.println("payload id : "+payload.schoolNmReq.getId());
         if (schoolOptional.isEmpty()) {
             map.put("message","School name not found !!");
             map.put("status",false);

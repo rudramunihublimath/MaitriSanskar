@@ -21,6 +21,8 @@ public class SchoolNameResponse {
 
     private Long id;
     private String name;
+    private String code;
+    private String password;
     private String email;
     private String country;
     private String state;

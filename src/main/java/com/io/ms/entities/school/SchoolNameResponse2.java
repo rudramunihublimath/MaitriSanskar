@@ -15,6 +15,7 @@ public class SchoolNameResponse2 {
 
     private Long id;
     private String name;
+    private String code;
     private String email;
     private String city;
     private String contactNum1;

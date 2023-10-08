@@ -58,7 +58,7 @@ public class SchoolPOCService {
     public ResponseEntity<?> editSchoolPOC(SchoolPOCRequest payload) {
         Map<String,Object> map = new HashMap<>();
 
-        Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(payload.getId());
+        Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(payload.schoolNameRequest.getId());
         if (schoolOptional.isEmpty()) {
             map.put("message","School name not found !!");
             map.put("status",false);

@@ -4,6 +4,7 @@ import com.io.ms.dao.*;
 import com.io.ms.entities.login.MBPTeams;
 import com.io.ms.entities.login.UserReportResp;
 import com.io.ms.entities.school.*;
+import com.io.ms.utility.GlobalUtility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,6 +53,8 @@ public class SchoolNameService {
 
         SchoolNameRequest sc=new SchoolNameRequest();
         sc.setName(payload.getName());
+        sc.setCode(generateCode(payload.getName()));
+        //sc.setPassword("");
         sc.setEmail(payload.getEmail());
         sc.setCountry(payload.getCountry());
         sc.setState(payload.getState());
@@ -78,6 +82,12 @@ public class SchoolNameService {
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
+    private String generateCode(String schoolName) {
+        //LocalDateTime currentDateTime = LocalDateTime.now();
+        //String strFormat = currentDateTime.format(GlobalUtility.generateDateFormat2());
+        return schoolName.substring(0,1)+ GlobalUtility.generateSerialNumber();
+    }
+
     public ResponseEntity<?> findSchoolById(Long id) {
         Map<String,Object> map = new HashMap<>();
 
@@ -92,6 +102,7 @@ public class SchoolNameService {
         SchoolNameResponse sc= new SchoolNameResponse();
         sc.setId(req.getId());
         sc.setName(req.getName());
+        sc.setCode(req.getCode());
         sc.setEmail(req.getEmail());
         sc.setCountry(req.getCountry());
         sc.setState(req.getState());

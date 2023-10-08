@@ -31,6 +31,12 @@ public class SchoolNameRequest {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
+    @Column(name = "code", unique = true, nullable = false, length = 40)
+    private String code;
+
+    @Column(name = "password", nullable = true, length = 60)
+    private String password;
+
     @Email
     @Column(name = "email", unique = true, nullable = false, length = 50)
     private String email;
