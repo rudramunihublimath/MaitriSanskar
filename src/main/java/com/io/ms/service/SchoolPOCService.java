@@ -66,7 +66,7 @@ public class SchoolPOCService {
             //return new ResponseEntity<String>("School name not found !! ", HttpStatus.NOT_FOUND);
         }
 
-        SchoolPOCRequest req= new SchoolPOCRequest();
+        /*SchoolPOCRequest req= new SchoolPOCRequest();
         req.setId(payload.getId());
         req.setTeacherfirstname(payload.getTeacherfirstname());
         req.setTeacherlastname(payload.getTeacherlastname());
@@ -75,7 +75,7 @@ public class SchoolPOCService {
         req.setContactNum2(payload.getContactNum2());
         req.setLinkdinID(payload.getLinkdinID());
         req.setEmail(payload.getEmail());
-        req.setFirstContact(payload.getFirstContact());
+        req.setFirstContact(payload.getFirstContact()); */
         schoolPOCRepo.save(payload);
 
         map.put("message","School Point of contact updated ");

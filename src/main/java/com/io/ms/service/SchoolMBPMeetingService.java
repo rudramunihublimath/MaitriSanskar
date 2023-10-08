@@ -55,7 +55,7 @@ public class SchoolMBPMeetingService {
             //return new ResponseEntity<String>("School name not found !! ", HttpStatus.NOT_FOUND);
         }
 
-        SchoolMBPMeetingRequest req= new SchoolMBPMeetingRequest();
+        /*SchoolMBPMeetingRequest req= new SchoolMBPMeetingRequest();
         req.setId(payload.getId());
         req.setMeetingDateTime(payload.getMeetingDateTime());
         req.setNextAppointment(payload.getNextAppointment());
@@ -64,7 +64,8 @@ public class SchoolMBPMeetingService {
         req.setFeedback_Improvement( payload.getFeedback_Improvement() );
         req.setCreatedDate(payload.getCreatedDate());
         req.setUpdatedDate(payload.getUpdatedDate());
-        schoolMBPMeetingRepo.save(req);
+        //req.setSchoolNmReq(payload.schoolNmReq.getId()); */
+        schoolMBPMeetingRepo.save(payload);
 
         map.put("message","School Meeting info is updated");
         map.put("status",true);
