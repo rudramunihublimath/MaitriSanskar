@@ -16,6 +16,7 @@
    SELECT * FROM mbp.training;
    SELECT * FROM mbp.MBPFlags;
    SELECT * FROM mbp.agreement;
+   SELECT * FROM mbp.school_grades;
   
   select * from mbp.SchoolBoard;
 

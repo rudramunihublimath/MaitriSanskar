@@ -47,7 +47,8 @@ public class SchoolPOCService {
         req.setLinkdinID(payload.getLinkdinID());
         req.setEmail(payload.getEmail());
         req.setFirstContact(payload.getFirstContact());
-        schoolPOCRepo.save(payload);
+        req.setSchoolNameRequest(payload.getSchoolNameRequest());
+        schoolPOCRepo.save(req);
 
         map.put("message","School Point of contact added");
         map.put("status",true);

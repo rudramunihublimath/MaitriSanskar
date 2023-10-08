@@ -35,7 +35,8 @@ public class SchoolMBPMeetingService {
         req.setFeedback_Improvement( payload.getFeedback_Improvement() );
         req.setCreatedDate(payload.getCreatedDate());
         req.setUpdatedDate(payload.getUpdatedDate());
-        schoolMBPMeetingRepo.save(payload);
+        req.setSchoolNmReq(payload.getSchoolNmReq());
+        schoolMBPMeetingRepo.save(req);
 
         map.put("message","School Meeting info is added");
         map.put("status",true);
@@ -47,12 +48,11 @@ public class SchoolMBPMeetingService {
         Map<String,Object> map = new HashMap<>();
 
         Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(payload.schoolNmReq.getId());
-        System.out.println("payload id : "+payload.schoolNmReq.getId());
+
         if (schoolOptional.isEmpty()) {
             map.put("message","School name not found !!");
             map.put("status",false);
             return ResponseEntity.badRequest().body(map);
-            //return new ResponseEntity<String>("School name not found !! ", HttpStatus.NOT_FOUND);
         }
 
         /*SchoolMBPMeetingRequest req= new SchoolMBPMeetingRequest();
@@ -70,7 +70,6 @@ public class SchoolMBPMeetingService {
         map.put("message","School Meeting info is updated");
         map.put("status",true);
         return new ResponseEntity<>(map, HttpStatus.OK);
-        //return ResponseEntity.ok("School Meeting info is updated ");
     }
 
     public ResponseEntity<?> findSchoolMBPMeeting(Long id) {

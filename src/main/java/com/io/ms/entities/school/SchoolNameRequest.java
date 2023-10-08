@@ -127,4 +127,7 @@ public class SchoolNameRequest {
     @OneToOne(mappedBy = "agreementReq", cascade = CascadeType.ALL, optional = true)
     private AgreementRequest agreementRequest;
 
+    @OneToMany(mappedBy = "schoolNmReq2")
+    private List<SchoolGradeRequest> schoolGradesRequest;
+
 }
