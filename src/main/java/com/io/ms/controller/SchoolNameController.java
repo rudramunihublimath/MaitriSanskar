@@ -47,11 +47,16 @@ public class SchoolNameController {
         return schoolNameService.getTargetPhase();
     }
 
+    // This service is for OutreachHead - to find based on user table cityAllocated only
     @GetMapping(value = "/Secured/MBP/School/findAllSchoolInCity")
-    //public ResponseEntity<?> findAllSchoolInCity(@RequestParam List<String> cities)  {
     public ResponseEntity<?> findAllSchoolInCity(@RequestParam String cities)  {
         return schoolNameService.findAllSchoolInCity(cities);
     }
 
+    // This service is for Outreach Team -  to find based on user table cityAllocated & schoolAllocated
+    @GetMapping(value = "/Secured/MBP/School/findAllSchoolForGivenCityndSchoolName")
+    public ResponseEntity<?> findAllSchoolForGivenCityndSchoolName(@RequestParam String schoolId)  {
+        return schoolNameService.findAllSchoolForGivenCityndSchoolName(schoolId);
+    }
 
 }

@@ -187,19 +187,17 @@ public class SchoolNameService {
     public ResponseEntity<?> findAllSchoolInCity(String cities) {
         String[] cityArray = cities.split(",");
 
-        //List<SchoolNameRequest> byCity = schoolNameRepo.findByCity(cities);
-        List<List<SchoolNameRequest>> schoolLists = Arrays.stream(cityArray)    //cities.stream()
+        List<SchoolNameRequest> schoolLists = Arrays.stream(cityArray)
+                .parallel()
                 .map(myCity -> schoolNameRepo.findByCity(myCity))
-                .collect(Collectors.toList());
-
-        List<SchoolNameRequest> flattenedList = schoolLists.stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        //ArrayList<SchoolNameResponse2> resp= new ArrayList<>();
-        //flattenedList.stream().forEach(i-> resp.add(getSchoolListResponse(i)));
+        /*List<SchoolNameRequest> flattenedList = schoolLists.stream()
+                .flatMap(List::stream)
+                .collect(Collectors.toList());  */
 
-        List<SchoolNameResponse2> resp = flattenedList.parallelStream() // Use parallelStream()
+        List<SchoolNameResponse2> resp = schoolLists.parallelStream() // Use parallelStream()
                 .map(this::getSchoolListResponse)
                 .collect(Collectors.toList());
 
@@ -217,6 +215,20 @@ public class SchoolNameService {
         return resp;
     }
 
+    public ResponseEntity<?> findAllSchoolForGivenCityndSchoolName(String schoolId) {
+        String[] schId = schoolId.split(",");
 
+        List<Long> schIdList = new ArrayList<>();
+        for (String id : schId) {
+            schIdList.add(Long.parseLong(id.trim()));
+        }
 
+        List<SchoolNameRequest> list = schoolNameRepo.findAllById(schIdList);
+
+        List<SchoolNameResponse2> resp = list.parallelStream()
+                .map(this::getSchoolListResponse)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(resp);
+    }
 }

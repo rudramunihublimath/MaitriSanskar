@@ -118,6 +118,9 @@ public class User implements UserDetails {
   @Column(name = "cityAllocated", length = 300)
   private List<String> citiesAllocated;
 
+  @Column(name = "schoolAllocated", length = 300)
+  private List<Long> schoolAllocated;
+
   @Enumerated(EnumType.STRING)
   private Role role;
 
