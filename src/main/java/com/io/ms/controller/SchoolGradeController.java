@@ -36,4 +36,9 @@ public class SchoolGradeController {
         return schoolGradeService.findSchoolGrades(id);
     }
 
+    @GetMapping(value = "/Secured/MBP/School/FindAllGradesYear")
+    public ResponseEntity<?> findAllGradesYear()  {
+        return schoolGradeService.findAllGradesYear();
+    }
+
 }

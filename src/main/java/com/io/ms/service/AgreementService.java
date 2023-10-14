@@ -1,11 +1,15 @@
 package com.io.ms.service;
 
 
+import com.io.ms.constant.AppConstants;
 import com.io.ms.dao.AgreementRepo;
 import com.io.ms.dao.SchoolNameRepo;
 import com.io.ms.entities.school.AgreementRequest;
 import com.io.ms.entities.school.AgreementResponse;
 import com.io.ms.entities.school.SchoolNameRequest;
+import com.io.ms.exception.UserAppException;
+import com.io.ms.properties.AppProperties;
+import com.io.ms.utility.EmailUtils;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -26,6 +32,10 @@ public class AgreementService {
     private final AgreementRepo agreementRepo;
     @Autowired
     private final SchoolNameRepo schoolNameRepo;
+    @Autowired
+    private AppProperties appProps;
+    @Autowired
+    private EmailUtils emailUtils;
 
     public ResponseEntity<?> addAgreementInfo(AgreementRequest payload, Long schoolId) {
         Map<String,Object> map = new HashMap<>();
@@ -56,7 +66,7 @@ public class AgreementService {
         }
     }
 
-    public ResponseEntity<?> editAgreementInfo(AgreementRequest payload,Long schoolId) {
+    public ResponseEntity<?> editAgreementInfo(AgreementRequest payload,Long schoolId) throws UserAppException {
         Map<String,Object> map = new HashMap<>();
 
         Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
@@ -70,6 +80,16 @@ public class AgreementService {
 
                 if (payload.getAgreementCompleted().equals("Yes")) {
                     // Do something when payloadValue is "Yes"
+                    String email="rudra.hublimath@gmail.com";
+                    String emailBody = readAgreementEmailBody(schoolNameRequest);
+                    String subject = appProps.getMessages().get(AppConstants.AGREEMENT_EMAIL_SUB);
+                    try {
+                        emailUtils.sendEmail(email, subject, emailBody);
+                    } catch (Exception e) {
+                        logger.error(AppConstants.EXCEPTION_OCCURRED + e.getMessage(), e);
+                        throw new UserAppException(e.getMessage());
+                    }
+
                     System.out.println("Email Sent to School "+schoolNameRequest.getEmail());
                     req.setAgreementCompleted("Yes");
                 } else {
@@ -99,6 +119,29 @@ public class AgreementService {
             map.put("status",false);
             return ResponseEntity.badRequest().body(map);
         }
+    }
+
+    private String readAgreementEmailBody(SchoolNameRequest req) throws UserAppException {
+        StringBuilder sb = new StringBuilder(AppConstants.EMPTY_STR);
+        String mailBody = AppConstants.EMPTY_STR;
+        String fileName = appProps.getMessages().get(AppConstants.TRAINING_EMAIL_BODY_FILE);
+        try (FileReader fr = new FileReader(fileName)) {
+                BufferedReader br = new BufferedReader(fr);
+                String line = br.readLine();
+
+                while (line != null) {
+                    sb.append(line);
+                    line = br.readLine();
+                }
+                br.close();
+                mailBody = sb.toString();
+                mailBody = mailBody.replace(AppConstants.SCHOOL_ID,String.valueOf(req.getId()));
+                mailBody = mailBody.replace(AppConstants.SCHOOL_NAME, req.getName());
+        } catch (Exception e) {
+             logger.error(AppConstants.EXCEPTION_OCCURRED + e.getMessage(), e);
+             throw new UserAppException(e.getMessage());
+        }
+        return mailBody;
     }
 
     public ResponseEntity<?> findAgreementInfo(Long schoolId) {

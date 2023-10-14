@@ -144,8 +144,8 @@ public class SchoolNameService {
 
         SchoolNameRequest sc = schoolOptional.get();
         //sc.setName(payload.getName());
-        //sc.setEmail(payload.getEmail());
-        //sc.setCity(payload.getCity());
+        sc.setEmail(payload.getEmail());
+        sc.setCity(payload.getCity());
         sc.setBoard(payload.getBoard());
         sc.setContactNum1(payload.getContactNum1());
         sc.setContactNum2(payload.getContactNum2());

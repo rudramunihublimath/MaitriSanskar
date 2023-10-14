@@ -3,6 +3,7 @@ package com.io.ms.controller;
 
 
 import com.io.ms.entities.school.AgreementRequest;
+import com.io.ms.exception.UserAppException;
 import com.io.ms.service.AgreementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class AgreementController {
 
 
     @PutMapping(value = "/Secured/MBP/School/EditAgreementInfo")
-    public ResponseEntity<?> editAgreementInfo(@RequestBody AgreementRequest payload,@RequestParam Long schoolId)  {
+    public ResponseEntity<?> editAgreementInfo(@RequestBody AgreementRequest payload,@RequestParam Long schoolId) throws UserAppException {
         return agreementService.editAgreementInfo(payload,schoolId);
     }
 

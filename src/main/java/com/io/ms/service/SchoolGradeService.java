@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public class SchoolGradeService {
     public ResponseEntity<?> addSchoolGrades(SchoolGradeRequest payload) {
         Map<String,Object> map = new HashMap<>();
 
-        for(int i=1;i<=10;i++){
+        for(int i=1;i<=8;i++){
             SchoolGradeRequest req = new SchoolGradeRequest();
             req.setYear(LocalDate.now().getYear());
             req.setGradeName("Grade-" + i);
@@ -80,5 +81,15 @@ public class SchoolGradeService {
         resp.setTotalStudentCount(req.getTotalStudentCount());
         resp.setBooksGivenCount(req.getBooksGivenCount());
         return resp;
+    }
+
+    public ResponseEntity<?> findAllGradesYear() {
+        Map<String,Object> map = new HashMap<>();
+
+        List<SchoolGradeRequest> list = schoolGradeRepo.findAll();
+        Set<Integer> respList = list.stream().map(i -> i.getYear()).collect(Collectors.toSet());
+        map.put("message",respList);
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }

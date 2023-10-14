@@ -9,6 +9,9 @@ public class AppConstants {
        public static final String TRAINING_EMAIL_BODY_FILE = "TrainingEmailBodyFile";
        public static final String TRAINING_EMAIL_SUB =  "TrainingEmailSub";
 
+       public static final String AGREEMENT_EMAIL_BODY_FILE = "AgreementEmailBodyFile";
+       public static final String AGREEMENT_EMAIL_SUB =  "AgreementEmailSub";
+
        public static final String FNAME = "{FNAME}";
        public static final String LNAME = "{LNAME}" ;
        public static final String TEMP_PAZZWD = "{TEMP-PWD}" ;

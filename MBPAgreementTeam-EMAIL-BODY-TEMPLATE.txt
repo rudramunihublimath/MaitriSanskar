@@ -1,0 +1,10 @@
+Hi,<br/>
+<br/>
+We completed agreement with you <br/>
+<br/>
+School_Id   : {SchoolId}<br/>
+School_Name : {SchoolName}<br/>
+<br/>
+
+Thanks & Regards,<br/>
+MaitriSanskar Team<br/>
