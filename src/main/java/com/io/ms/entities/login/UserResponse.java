@@ -39,4 +39,5 @@ public class UserResponse {
     private String reportingmanagerName;
     private String nameofMyTeam;
     private List<String> citiesAllocated;
+    private List<Long> schoolAllocated;
 }

@@ -59,4 +59,10 @@ public class SchoolNameController {
         return schoolNameService.findAllSchoolForGivenCityndSchoolName(schoolId);
     }
 
+    // Find school ID and name based on citiesAllocated field
+    @GetMapping(value = "/Secured/MBP/School/findAllSchool_citiesAllocated")
+    public ResponseEntity<?> findAllSchool_citiesAllocated(@RequestParam String cities)  {
+        return schoolNameService.findAllSchool_citiesAllocated(cities);
+    }
+
 }

@@ -37,6 +37,7 @@ public class CommonMethods {
         resp.setReportingmanagerName(user.getReportingmanagerName());
         resp.setNameofMyTeam(user.getNameofMyTeam());
         resp.setCitiesAllocated(user.getCitiesAllocated());
+        resp.setSchoolAllocated(user.getSchoolAllocated());
         return resp;
     }
 
