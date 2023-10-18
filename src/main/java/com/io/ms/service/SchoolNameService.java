@@ -211,12 +211,6 @@ public class SchoolNameService {
         return resp;
     }
 
-    private SchoolNameResponse3 getSchoolListResponse3(SchoolNameRequest req) {
-        SchoolNameResponse3 resp= new SchoolNameResponse3();
-        resp.setId(req.getId());
-        resp.setName(req.getName());
-        return resp;
-    }
 
     public ResponseEntity<?> findAllSchoolForGivenCityndSchoolName(String schoolId) {
         String[] schId = schoolId.split(",");
@@ -236,19 +230,4 @@ public class SchoolNameService {
     }
 
 
-    public ResponseEntity<?> findAllSchool_citiesAllocated(String cities) {
-        String[] cityArray = cities.split(",");
-
-        List<SchoolNameRequest> schoolLists = Arrays.stream(cityArray)
-                .parallel()
-                .map(myCity -> schoolNameRepo.findByCity(myCity))
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-
-        List<SchoolNameResponse3> resp = schoolLists.parallelStream()
-                .map(this::getSchoolListResponse3)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(resp);
-    }
 }
