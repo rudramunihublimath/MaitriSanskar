@@ -22,13 +22,13 @@ public class OutReachRequest {
     @Column(name = "outreachuserid", nullable = false, length = 50)
     private String outreachuserid;
 
-    @Column(name = "outreach_assigneddate", nullable = false, length = 30)
+    @Column(name = "outreach_assigneddate", nullable = true, length = 30)
     private LocalDate outreach_assigneddate;
 
     @Column(name = "outreachheaduserid", nullable = false, length = 50)
     private String outreachheaduserid;
 
-    @Column(name = "outreachHead_uassigneddate", nullable = false, length = 30)
+    @Column(name = "outreachHead_uassigneddate", nullable = true, length = 30)
     private LocalDate outreachHead_assigneddate;
 
     @Column(name = "outreach_completed", length = 5)
