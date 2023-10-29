@@ -121,6 +121,9 @@ public class User implements UserDetails {
   @Column(name = "schoolAllocated", length = 300)
   private List<Long> schoolAllocated;
 
+  @Column(name = "imageName", length = 100)
+  private String imageName;
+
   @Enumerated(EnumType.STRING)
   private Role role;
 

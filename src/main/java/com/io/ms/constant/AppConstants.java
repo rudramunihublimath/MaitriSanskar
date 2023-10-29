@@ -22,6 +22,8 @@ public class AppConstants {
        public static final String SCHOOL_ID = "{SchoolId}";
        public static final String SCHOOL_NAME = "{SchoolName}";
 
+       public static final String IMAGE_PATH = "E:\\MaitriBodh__Dada\\Maitri Sanskar\\IMAGE_TEST\\";
+
        private AppConstants() {
        }
 }

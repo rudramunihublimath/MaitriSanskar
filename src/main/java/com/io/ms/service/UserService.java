@@ -24,10 +24,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -439,4 +443,41 @@ public class UserService {
     }
 
 
+    public ResponseEntity<?> uploadImage(Long userId,MultipartFile uploadfile) {
+        Map<String,Object> map = new HashMap<>();
+
+        if (uploadfile.isEmpty()) {
+            return new ResponseEntity<String>("please select a file!", HttpStatus.OK);
+        }
+
+        try {
+            List<MultipartFile> files = Arrays.asList(uploadfile);
+            for (MultipartFile file : files) {
+                if (file.isEmpty()) {
+                    continue;
+                }
+                byte[] bytes = file.getBytes();
+                Path path = Paths.get(AppConstants.IMAGE_PATH + file.getOriginalFilename());
+                Files.write(path, bytes);
+                //saveMetaData(file);
+                Optional<User> userOptional = userRepo.findById(userId);
+                if (userOptional.isEmpty()) {
+                    map.put("message","User details not found !! "+userId);
+                    map.put("status",false);
+                    return ResponseEntity.badRequest().body(map);
+                }
+                User user = userOptional.get();
+                //create dir if not present with common path +// userId
+                String fullPath1=AppConstants.IMAGE_PATH+file.getOriginalFilename();
+                user.setImageName(fullPath1);
+                userRepo.save(user);
+                map.put("message","Image uploaded");
+                map.put("status",true);
+            }
+
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
 }

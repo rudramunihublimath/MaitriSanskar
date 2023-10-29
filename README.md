@@ -47,6 +47,7 @@ Insert Into mbp.SchoolBoard Values(2,'ICSE');
 Insert Into mbp.SchoolBoard Values(3,'IB');
 Insert Into mbp.SchoolBoard Values(4,'NIOS');
 Insert Into mbp.SchoolBoard Values(5,'AISSCE');
+Insert Into mbp.SchoolBoard Values(6,'SSC');
 
 Insert Into mbp.TargetPhase Values(1,'MiniPilot');
 Insert Into mbp.TargetPhase Values(2,'Pilot');

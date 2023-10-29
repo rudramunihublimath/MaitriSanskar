@@ -38,6 +38,7 @@ public class CommonMethods {
         resp.setNameofMyTeam(user.getNameofMyTeam());
         resp.setCitiesAllocated(user.getCitiesAllocated());
         resp.setSchoolAllocated(user.getSchoolAllocated());
+        resp.setImageName(user.getImageName());
         return resp;
     }
 

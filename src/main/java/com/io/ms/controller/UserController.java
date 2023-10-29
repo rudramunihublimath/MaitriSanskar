@@ -5,11 +5,14 @@ import com.io.ms.entities.login.User;
 import com.io.ms.entities.login.UserLoginReq;
 import com.io.ms.exception.UserAppException;
 import com.io.ms.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -53,4 +56,10 @@ public class UserController {
         return loginService.updateUserNOTActive(userId,managerId);
     }
 
+    @PatchMapping(value="/Secured/MBP/Login/Image",consumes = {"multipart/form-data" })
+    @Operation(summary = "Upload a single File")
+    public ResponseEntity<?> uploadImage(@RequestParam Long userId,
+                                         @RequestParam("file") MultipartFile uploadfile)  {
+        return loginService.uploadImage(userId,uploadfile);
+    }
 }

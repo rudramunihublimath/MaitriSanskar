@@ -40,4 +40,5 @@ public class UserResponse {
     private String nameofMyTeam;
     private List<String> citiesAllocated;
     private List<Long> schoolAllocated;
+    private String imageName;
 }
