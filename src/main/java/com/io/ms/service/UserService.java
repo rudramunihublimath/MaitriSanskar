@@ -107,7 +107,7 @@ public class UserService {
             reg.setReportingmanagerName(fullname);
             reg.setNameofMyTeam(payload.getNameofMyTeam());
             reg.setCitiesAllocated(payload.getCitiesAllocated());
-            reg.setSchoolAllocated(payload.getSchoolAllocated());
+            //reg.setSchoolAllocated(payload.getSchoolAllocated());
         }
 
         var savedUser =userRepo.save(reg);
@@ -369,7 +369,7 @@ public class UserService {
         reg.setReportingmanagerName(fullname);
         reg.setNameofMyTeam(payload.getNameofMyTeam());
         reg.setCitiesAllocated(payload.getCitiesAllocated());
-        reg.setSchoolAllocated(payload.getSchoolAllocated());
+        //reg.setSchoolAllocated(payload.getSchoolAllocated());
         userRepo.save(reg);
         map.put("message","Your account has been updated");
         map.put("status",true);

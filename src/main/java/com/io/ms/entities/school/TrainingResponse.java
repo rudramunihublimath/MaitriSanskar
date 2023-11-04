@@ -13,8 +13,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class TrainingResponse {
     private Long id;
-    private String trainTheTrainersId;
-    private String trainTheTrainerHeadId;
+    //private String trainTheTrainersId;
+    //private String trainTheTrainerHeadId;
     private String trainingPartCompleted;
     private LocalDate dateofCompletion;
     private String dataValidated;

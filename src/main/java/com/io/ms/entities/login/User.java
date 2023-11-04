@@ -1,15 +1,15 @@
 package com.io.ms.entities.login;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.io.ms.entities.login.Gender;
 import com.io.ms.entities.login.Role;
+import com.io.ms.entities.school.SchoolNameRequest;
 import com.io.ms.token.Token;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,9 +18,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-@Data
+@Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -118,8 +121,8 @@ public class User implements UserDetails {
   @Column(name = "cityAllocated", length = 300)
   private List<String> citiesAllocated;
 
-  @Column(name = "schoolAllocated", length = 300)
-  private List<Long> schoolAllocated;
+  //@Column(name = "schoolAllocated", length = 300)
+  //private List<Long> schoolAllocated;
 
   @Column(name = "imageName", length = 100)
   private String imageName;
@@ -130,6 +133,12 @@ public class User implements UserDetails {
   @OneToMany(mappedBy = "user")
   private List<Token> tokens;
 
+  @ManyToMany(mappedBy = "userName",fetch = FetchType.LAZY,cascade = {
+          CascadeType.PERSIST,
+          CascadeType.MERGE
+  })
+  @JsonIgnore
+  private Set<SchoolNameRequest> schoolNameRequests = new HashSet<>();
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

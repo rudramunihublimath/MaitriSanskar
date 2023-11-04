@@ -1,23 +1,21 @@
 package com.io.ms.entities.school;
 
 
-import com.io.ms.token.Token;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.io.ms.entities.login.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-@Data
+@Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -109,14 +107,28 @@ public class SchoolNameRequest {
     @Column(name = "updatedAt",insertable = false)
     private LocalDate updatedDate;
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "USER_SCHOOL_T",
+            joinColumns = {
+                    @JoinColumn(name = "school_id", referencedColumnName = "id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "user_id", referencedColumnName = "id")
+            }
+    )
+    private Set<User> userName= new HashSet<>();
+
     @OneToMany(mappedBy = "schoolNameRequest")
     private List<SchoolPOCRequest> SchoolPOCRequest;
 
     @OneToMany(mappedBy = "schoolNmReq")
     private List<SchoolMBPMeetingRequest> schoolMBPMeetingRequest;
 
-    @OneToOne(mappedBy = "nameRequest", cascade = CascadeType.ALL, optional = true)
-    private OutReachRequest outReachRequest;
+    //@OneToOne(mappedBy = "nameRequest", cascade = CascadeType.ALL, optional = true)
+    //private OutReachRequest outReachRequest;
 
     @OneToOne(mappedBy = "trainRequest", cascade = CascadeType.ALL, optional = true)
     private TrainingRequest trainingRequest;

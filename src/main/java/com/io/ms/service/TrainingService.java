@@ -33,8 +33,8 @@ public class TrainingService {
             SchoolNameRequest schoolNameRequest = schoolNameRequestOptional.get();
 
             TrainingRequest req = new TrainingRequest();
-            req.setTrainTheTrainersId(payload.getTrainTheTrainersId());
-            req.setTrainTheTrainerHeadId(payload.getTrainTheTrainerHeadId());
+            //req.setTrainTheTrainersId(payload.getTrainTheTrainersId());
+            //req.setTrainTheTrainerHeadId(payload.getTrainTheTrainerHeadId());
             req.setTrainingPartCompleted("No");
             //req.setDateofCompletion(payload.getDateofCompletion());
             req.setDataValidated("No");
@@ -64,8 +64,8 @@ public class TrainingService {
 
             TrainingRequest req = new TrainingRequest();
             req.setId(payload.getId());
-            req.setTrainTheTrainersId(payload.getTrainTheTrainersId());
-            req.setTrainTheTrainerHeadId(payload.getTrainTheTrainerHeadId());
+            //req.setTrainTheTrainersId(payload.getTrainTheTrainersId());
+            //req.setTrainTheTrainerHeadId(payload.getTrainTheTrainerHeadId());
             req.setTrainingPartCompleted(payload.getTrainingPartCompleted());
             req.setDateofCompletion(payload.getDateofCompletion());
             req.setDataValidated(payload.getDataValidated());
@@ -97,8 +97,8 @@ public class TrainingService {
             if (req!=null) {
                 TrainingResponse resp = new TrainingResponse();
                 resp.setId(req.getId());
-                resp.setTrainTheTrainersId(req.getTrainTheTrainersId());
-                resp.setTrainTheTrainerHeadId(req.getTrainTheTrainerHeadId());
+                //resp.setTrainTheTrainersId(req.getTrainTheTrainersId());
+                //resp.setTrainTheTrainerHeadId(req.getTrainTheTrainerHeadId());
                 resp.setTrainingPartCompleted(req.getTrainingPartCompleted());
                 resp.setDateofCompletion(req.getDateofCompletion());
                 resp.setDataValidated(req.getDataValidated());

@@ -2,9 +2,11 @@ package com.io.ms.service;
 
 import com.io.ms.dao.*;
 import com.io.ms.entities.login.MBPTeams;
+import com.io.ms.entities.login.User;
 import com.io.ms.entities.login.UserReportResp;
 import com.io.ms.entities.school.*;
 import com.io.ms.utility.GlobalUtility;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +36,14 @@ public class SchoolNameService {
     private final SchoolPOCRepo schoolPOCRepo;
     @Autowired
     private final SchoolMBPMeetingRepo schoolMBPMeetingRepo;
-    @Autowired
-    private final OutReachRepo outReachRepo;
+    //@Autowired
+    //private final OutReachRepo outReachRepo;
     @Autowired
     private final TrainingRepo trainingRepo;
     @Autowired
     private final MBPFlagsRepo mbpFlagsRepo;
+    @Autowired
+    private final UserRepository userRepository;
 
     public ResponseEntity<?> registerSchoolName(SchoolNameRequest payload) {
         Map<String,Object> map = new HashMap<>();
@@ -96,7 +100,6 @@ public class SchoolNameService {
             map.put("message","School details not found !!");
             map.put("status",false);
             return ResponseEntity.badRequest().body(map);
-            //return new ResponseEntity<String>("School details not found !! ", HttpStatus.NOT_FOUND);
         }
         SchoolNameRequest req = schoolOptional.get();
         SchoolNameResponse sc= new SchoolNameResponse();
@@ -129,7 +132,6 @@ public class SchoolNameService {
         map.put("message",sc);
         map.put("status",true);
         return new ResponseEntity<>(map, HttpStatus.OK);
-        //return new ResponseEntity<>(sc, HttpStatus.OK);
     }
 
     public ResponseEntity<?> editSchoolInfo(Long schoolId,SchoolNameRequest payload) {
@@ -211,23 +213,92 @@ public class SchoolNameService {
         return resp;
     }
 
+    public ResponseEntity<?> addUserToSchool(Long schoolId, Long userId) {
+        Map<String,Object> map = new HashMap<>();
 
-    public ResponseEntity<?> findAllSchoolForGivenCityndSchoolName(String schoolId) {
-        String[] schId = schoolId.split(",");
-
-        List<Long> schIdList = new ArrayList<>();
-        for (String id : schId) {
-            schIdList.add(Long.parseLong(id.trim()));
+        Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
+        if (schoolOptional.isEmpty()) {
+            map.put("message","School details not found !!");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+        }
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()) {
+            map.put("message","User details not found !!");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
         }
 
-        List<SchoolNameRequest> list = schoolNameRepo.findAllById(schIdList);
+        try {
+            schoolNameRepo.insertRecord(schoolId, userId);
+        } catch (Exception ex) {
+            ex.getMessage();
+        }
 
-        List<SchoolNameResponse2> resp = list.parallelStream()
-                .map(this::getSchoolListResponse)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(resp);
+        map.put("message","User Info is added for this school");
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
 
+    public ResponseEntity<?> editUserToSchool(Long schoolId, Long userId,Long newUserId) {
+        Map<String,Object> map = new HashMap<>();
+
+        Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
+        if (schoolOptional.isEmpty()) {
+            map.put("message","School details not found !!");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+        }
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()) {
+            map.put("message","User details not found !!");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+        }
+        Optional<User> newUserOptional  = userRepository.findById(newUserId);
+        if (newUserOptional.isEmpty()) {
+            map.put("message","New User details not found !!");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+        }
+
+        try {
+            schoolNameRepo.updateRecord(schoolId,userId,newUserId);
+        } catch (Exception ex) {
+            ex.getMessage();
+        }
+
+        map.put("message","User association with the school has been updated");
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+
+    public ResponseEntity<?> findUsersAllocatedToSchool(Long schoolId) {
+        Map<String,Object> map = new HashMap<>();
+
+        Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
+        if (schoolOptional.isEmpty()) {
+            map.put("message","School details not found !!");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+        }
+        List<Long> userId = schoolNameRepo.selectRecord(schoolId);
+        Map<Long, UserSchoolInfo> userMap = new HashMap<>();
+
+        userId.stream().map(id-> {
+                            Optional<User> user = userRepository.findById(id);
+                            User user1 = user.get();
+                            userMap.put(id,new UserSchoolInfo(user1.getFirstname(),user1.getLastname(),user1.getEmail(),
+                             user1.getContactNum1(),user1.getContactNum2(),user1.getNameofMyTeam()));
+                            return null;}
+                ).collect(Collectors.toList());
+
+        System.out.println(userMap);
+
+        map.put("message",userMap);
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
 }

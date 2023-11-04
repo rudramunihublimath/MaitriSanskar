@@ -1,7 +1,9 @@
 package com.io.ms.dao;
 
 import com.io.ms.entities.login.User;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -20,4 +22,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByContactNumContainingSubstring(@Param("contactNum") String contactNum);
 
     List<User> findByReportingmanagerId(Long id);
+
+
 }

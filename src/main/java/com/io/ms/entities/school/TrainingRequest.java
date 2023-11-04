@@ -19,11 +19,11 @@ public class TrainingRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "trainTheTrainersId", nullable = false, length = 50)
-    private String trainTheTrainersId;
+    //@Column(name = "trainTheTrainersId", nullable = false, length = 50)
+    //private String trainTheTrainersId;
 
-    @Column(name = "trainTheTrainerHeadId", nullable = false, length = 50)
-    private String trainTheTrainerHeadId;
+    //@Column(name = "trainTheTrainerHeadId", nullable = false, length = 50)
+    //private String trainTheTrainerHeadId;
 
     @Column(name = "trainingPartCompleted",nullable = true, length = 5)
     private String trainingPartCompleted;

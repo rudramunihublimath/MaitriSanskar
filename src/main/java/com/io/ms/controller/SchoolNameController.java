@@ -5,6 +5,7 @@ import com.io.ms.service.SchoolNameService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,23 +48,37 @@ public class SchoolNameController {
         return schoolNameService.getTargetPhase();
     }
 
-    // This service is for OutreachHead - to find based on user table cityAllocated only
+
+    // This service is for OutreachHead - to find based on user table cityAllocated only (based on city name)
     @GetMapping(value = "/Secured/MBP/School/findAllSchoolInCity")
     public ResponseEntity<?> findAllSchoolInCity(@RequestParam String cities)  {
         return schoolNameService.findAllSchoolInCity(cities);
     }
 
+    /*
     // This service is for Outreach Team -  to find based on user table cityAllocated & schoolAllocated
     @GetMapping(value = "/Secured/MBP/School/findAllSchoolForGivenCityndSchoolName")
     public ResponseEntity<?> findAllSchoolForGivenCityndSchoolName(@RequestParam String schoolId)  {
         return schoolNameService.findAllSchoolForGivenCityndSchoolName(schoolId);
     }
-
-    /*
-    // Find school ID and name based on citiesAllocated field
-    @GetMapping(value = "/Secured/MBP/School/findAllSchool_citiesAllocated")
-    public ResponseEntity<?> findAllSchool_citiesAllocated(@RequestParam String cities)  {
-        return schoolNameService.findAllSchool_citiesAllocated(cities);
-    }
     */
+
+    @PostMapping(value = "/Secured/MBP/School/AddUserToSchool")
+    public ResponseEntity<?> addUserToSchool(@RequestParam Long schoolId,@RequestParam Long userId)  {
+        return schoolNameService.addUserToSchool(schoolId,userId);
+    }
+
+    @PutMapping(value = "/Secured/MBP/School/EditUserToSchool")
+    public ResponseEntity<?> editUserToSchool(@RequestParam Long schoolId,@RequestParam Long userId,
+                                              @RequestParam Long newUserId)  {
+        return schoolNameService.editUserToSchool(schoolId,userId,newUserId);
+    }
+
+
+    @GetMapping(value = "/Secured/MBP/School/findUsersAllocatedToSchool")
+    public ResponseEntity<?> findUsersAllocatedToSchool(@RequestParam Long schoolId)  {
+        return schoolNameService.findUsersAllocatedToSchool(schoolId);
+    }
+
+
 }

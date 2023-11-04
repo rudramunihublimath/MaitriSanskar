@@ -96,7 +96,7 @@ public class MBPFlagsService {
                     Optional<TrainingRequest> trOptional = trainingRepo.findById(schoolId);
                     if (trOptional.isPresent()) {
                         TrainingRequest trainingRequest = trOptional.get();
-                        String email=trainingRequest.getTrainTheTrainerHeadId();
+                        String email="rudra.hublimath@gmail.com";
                         String emailBody = readTrainingEmailBody(schoolNameRequest);
                         String subject = appProps.getMessages().get(AppConstants.TRAINING_EMAIL_SUB);
                         try {
@@ -105,7 +105,7 @@ public class MBPFlagsService {
                             logger.error(AppConstants.EXCEPTION_OCCURRED + e.getMessage(), e);
                             throw new UserAppException(e.getMessage());
                         }
-                        System.out.println("Email Sent to Training Team Head "+trainingRequest.getTrainTheTrainerHeadId());
+                        System.out.println("Email Sent to Training Team Head ");
                         req.setDealClosed("Yes");
                     }
                     else{
