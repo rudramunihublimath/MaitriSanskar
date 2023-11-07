@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Service
@@ -277,6 +278,10 @@ public class SchoolNameService {
 
     public ResponseEntity<?> findUsersAllocatedToSchool(Long schoolId) {
         Map<String,Object> map = new HashMap<>();
+        AtomicBoolean outReachAllocated = new AtomicBoolean(false);
+        AtomicBoolean outReachHeadAllocated = new AtomicBoolean(false);
+        AtomicBoolean trainingAllocated = new AtomicBoolean(false);
+        AtomicBoolean trainingHeadAllocated = new AtomicBoolean(false);
 
         Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
         if (schoolOptional.isEmpty()) {
@@ -287,18 +292,37 @@ public class SchoolNameService {
         List<Long> userId = schoolNameRepo.selectRecord(schoolId);
         Map<Long, UserSchoolInfo> userMap = new HashMap<>();
 
-        userId.stream().map(id-> {
-                            Optional<User> user = userRepository.findById(id);
-                            User user1 = user.get();
-                            userMap.put(id,new UserSchoolInfo(user1.getFirstname(),user1.getLastname(),user1.getEmail(),
-                             user1.getContactNum1(),user1.getContactNum2(),user1.getNameofMyTeam()));
-                            return null;}
-                ).collect(Collectors.toList());
+        userId.stream().map(id -> {
+            Optional<User> userOptional = userRepository.findById(id);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                UserSchoolInfo userSchoolInfo = new UserSchoolInfo(user.getFirstname(), user.getLastname(), user.getEmail(),
+                        user.getContactNum1(), user.getContactNum2(), user.getNameofMyTeam());
+                userMap.put(id, userSchoolInfo);
 
-        System.out.println(userMap);
+                // Check the name of the team and set the corresponding flags
+                if ("OutReach".equals(user.getNameofMyTeam())) {
+                    outReachAllocated.set(true);
+                } else if ("OutReach_Head".equals(user.getNameofMyTeam())) {
+                    outReachHeadAllocated.set(true);
+                } else if ("TrainTheTrainer".equals(user.getNameofMyTeam())) {
+                    trainingAllocated.set(true);
+                } else if ("TrainTheTrainer_Head".equals(user.getNameofMyTeam())) {
+                    trainingHeadAllocated.set(true);
+                }
+            }
+
+            return null;
+        }).collect(Collectors.toList());
 
         map.put("message",userMap);
         map.put("status",true);
+        // Include outReachAllocated and trainingAllocated in the response
+        map.put("outReachAllocated",     outReachAllocated);
+        map.put("outReachHeadAllocated", outReachHeadAllocated);
+        map.put("trainingAllocated",     trainingAllocated);
+        map.put("trainingHeadAllocated", trainingHeadAllocated);
+
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }
