@@ -143,4 +143,16 @@ public class UserReportService {
         map.put("status",true);
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
+
+    public ResponseEntity<?> searchBook(String nameofMyTeam, String name) {
+        Map<String,Object> map = new HashMap<>();
+
+        List<User> user = userRepo.findByNameofMyTeam(nameofMyTeam,name);
+
+        ArrayList<UserReportResp> resp= new ArrayList<>();
+        user.stream().forEach(i-> resp.add(getUserReportResponse(i)));
+        return ResponseEntity.ok(resp);
+    }
+
+
 }

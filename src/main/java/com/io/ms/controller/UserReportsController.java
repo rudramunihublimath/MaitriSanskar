@@ -60,4 +60,10 @@ public class UserReportsController {
         return userReportService.getCities(stateId);
     }
 
+    @GetMapping("/Secured/MBP/Login/searchBook")
+    public ResponseEntity<?> searchBook(@RequestParam String nameofMyTeam,
+                                        @RequestParam String name) {
+        return userReportService.searchBook(nameofMyTeam,name);
+    }
+
 }
