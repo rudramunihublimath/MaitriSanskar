@@ -114,6 +114,8 @@ public class UserReportService {
         resp.setFirstname(user.getFirstname());
         resp.setLastname(user.getLastname());
         resp.setEmail(user.getEmail());
+        resp.setContactNum1(user.getContactNum1());
+        resp.setNameofMyTeam(user.getNameofMyTeam());
         return resp;
     }
 

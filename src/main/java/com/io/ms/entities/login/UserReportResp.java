@@ -12,4 +12,6 @@ public class UserReportResp {
     private String firstname;
     private String lastname;
     private String email;
+    private String contactNum1;
+    private String nameofMyTeam;
 }

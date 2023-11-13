@@ -91,7 +91,7 @@ public class UserService {
         reg.setPincode(payload.getPincode());
         reg.setProfileActive("Yes");
         if(payload.getNameofMyTeam().equals("Central_Mool")){
-            reg.setReportingmanagerId(0l);
+            reg.setReportingmanagerId(1l);  // Dada's ID will be 1
             reg.setReportingmanagerName("Admin");
             reg.setNameofMyTeam(payload.getNameofMyTeam());
             reg.setCitiesAllocated(List.of("N/A"));

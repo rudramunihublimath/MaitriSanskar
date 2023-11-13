@@ -47,5 +47,14 @@ Insert Into mbp.TargetPhase Values(1,'MiniPilot');
 Insert Into mbp.TargetPhase Values(2,'Pilot');
 commit;
 
+Insert Into mbp.CITIES_MASTER Values(1,'Ludhiana',27);
+Insert Into mbp.CITIES_MASTER Values(2,'Amritsar',27);
+Insert Into mbp.CITIES_MASTER Values(3,'Banglore',15);
+Insert Into mbp.CITIES_MASTER Values(4,'Mysore',15);
+Insert Into mbp.CITIES_MASTER Values(5,'Mumbai',20);
+Insert Into mbp.CITIES_MASTER Values(6,'Pune',20);
+Insert Into mbp.CITIES_MASTER Values(7,'Delhi',8);
+commit;
+
 ------------\n
 
