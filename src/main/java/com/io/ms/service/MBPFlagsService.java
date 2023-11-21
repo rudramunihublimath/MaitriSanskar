@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,8 +31,8 @@ public class MBPFlagsService {
     private static Logger logger = LoggerFactory.getLogger(MBPFlagsService.class);
     @Autowired
     private final MBPFlagsRepo mbpFlagsRepo;
-    @Autowired
-    private final TrainingRepo trainingRepo;
+    //@Autowired
+    //private final TrainingRepo trainingRepo;
     @Autowired
     private final SchoolNameRepo schoolNameRepo;
     @Autowired
@@ -93,10 +94,12 @@ public class MBPFlagsService {
 
                 if (payload.getDealClosed().equals("Yes")) {
                     // Do something when payloadValue is "Yes"
-                    Optional<TrainingRequest> trOptional = trainingRepo.findById(schoolId);
+                    //Optional<TrainingRequest> trOptional = trainingRepo.findById(schoolId);
+                    Optional<String> trOptional = schoolNameRepo.selectTrainingEmailId(schoolId);
+
                     if (trOptional.isPresent()) {
-                        TrainingRequest trainingRequest = trOptional.get();
-                        String email="rudra.hublimath@gmail.com";
+                        //TrainingRequest trainingRequest = trOptional.get();
+                        String email=trOptional.get();
                         String emailBody = readTrainingEmailBody(schoolNameRequest);
                         String subject = appProps.getMessages().get(AppConstants.TRAINING_EMAIL_SUB);
                         try {
@@ -105,11 +108,11 @@ public class MBPFlagsService {
                             logger.error(AppConstants.EXCEPTION_OCCURRED + e.getMessage(), e);
                             throw new UserAppException(e.getMessage());
                         }
-                        System.out.println("Email Sent to Training Team Head ");
+                        //System.out.println("Email Sent to Training Team Head "+email);
                         req.setDealClosed("Yes");
                     }
                     else{
-                        map.put("message","Training email ID not found");
+                        map.put("message","Email ID not found, out of 4 (Outreach/Training)");
                         map.put("status",false);
                         return new ResponseEntity<>(map, HttpStatus.OK);
                     }

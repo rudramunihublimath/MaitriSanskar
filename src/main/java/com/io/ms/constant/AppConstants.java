@@ -24,6 +24,11 @@ public class AppConstants {
 
        public static final String IMAGE_PATH = "E:\\MaitriBodh__Dada\\Maitri Sanskar\\IMAGE_TEST\\";
 
+       public static final String OutReach              = "OutReach";
+       public static final String OutReach_Head         = "OutReach_Head";
+       public static final String TrainTheTrainer       = "TrainTheTrainer";
+       public static final String TrainTheTrainer_Head  = "TrainTheTrainer_Head";
+
        private AppConstants() {
        }
 }

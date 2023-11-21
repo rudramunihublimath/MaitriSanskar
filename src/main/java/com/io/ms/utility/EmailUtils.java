@@ -24,9 +24,27 @@ public class EmailUtils {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
         mimeMessageHelper.setSubject(subject);
         mimeMessageHelper.setTo(to);
+        //mimeMessageHelper.setCc("");
         mimeMessageHelper.setText(body, true);
         mailSender.send(mimeMessageHelper.getMimeMessage());
         isSent = true;
+        } catch (Exception e) {
+            logger.error(AppConstants.EXCEPTION_OCCURRED  + e.getMessage(), e);
+        }
+        return isSent;
+    }
+
+    public boolean sendEmailWithCc(String to,String[] cc, String subject, String body)  {
+        boolean isSent = false;
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setSubject(subject);
+            mimeMessageHelper.setTo(to);
+            mimeMessageHelper.setCc(cc);
+            mimeMessageHelper.setText(body, true);
+            mailSender.send(mimeMessageHelper.getMimeMessage());
+            isSent = true;
         } catch (Exception e) {
             logger.error(AppConstants.EXCEPTION_OCCURRED  + e.getMessage(), e);
         }

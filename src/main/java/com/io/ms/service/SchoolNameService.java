@@ -1,14 +1,11 @@
 package com.io.ms.service;
 
+import com.io.ms.constant.AppConstants;
 import com.io.ms.dao.*;
-import com.io.ms.entities.login.MBPTeams;
 import com.io.ms.entities.login.User;
-import com.io.ms.entities.login.UserReportResp;
 import com.io.ms.entities.school.*;
 import com.io.ms.utility.GlobalUtility;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -197,13 +193,21 @@ public class SchoolNameService {
                 .collect(Collectors.toList());
 
         List<SchoolNameResponse2> resp = schoolLists.parallelStream()
-                .map(this::getSchoolListResponse)
+                .map( req-> {
+                    List<String> list = schoolNameRepo.selectRecord2(req.getId());
+                    return getSchoolListResponse(req,list);
+                })
+                 // this::getSchoolListResponse)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(resp);
     }
 
-    private SchoolNameResponse2 getSchoolListResponse(SchoolNameRequest req) {
+    private SchoolNameResponse2 getSchoolListResponse(SchoolNameRequest req,List<String> list ) {
+        Boolean outReachAllocated = false;
+        Boolean outReachHeadAllocated = false;
+        Boolean trainingHeadAllocated = false;
+
         SchoolNameResponse2 resp= new SchoolNameResponse2();
         resp.setId(req.getId());
         resp.setName(req.getName());
@@ -211,27 +215,58 @@ public class SchoolNameService {
         resp.setCity(req.getCity());
         resp.setContactNum1(req.getContactNum1());
         resp.setPincode(req.getPincode());
+
+        /*
+        for (Map<Long, String> map : maps) {
+            for (Map.Entry<Long, String> entry : map.entrySet()) {
+                // Check the condition for the String value
+                if (AppConstants.OutReach.equals(entry.getValue()))
+                    outReachAllocated=true;
+                else if (AppConstants.OutReach_Head.equals(entry.getValue()))
+                    outReachHeadAllocated=true;
+                else if (AppConstants.TrainTheTrainer_Head.equals(entry.getValue()))
+                    trainingHeadAllocated=true;
+            }
+        } */
+        for(String val: list){
+            if (AppConstants.OutReach.equals(val))
+                outReachAllocated=true;
+            else if (AppConstants.OutReach_Head.equals(val))
+                outReachHeadAllocated=true;
+            else if (AppConstants.TrainTheTrainer_Head.equals(val))
+                trainingHeadAllocated=true;
+        }
+
+        resp.setOutReachAllocated(outReachAllocated);
+        resp.setOutReachHeadAllocated(outReachHeadAllocated);
+        resp.setTrainingHeadAllocated(trainingHeadAllocated);
         return resp;
     }
 
-    public ResponseEntity<?> addUserToSchool(Long schoolId, Long userId) {
+    public ResponseEntity<?> addUserToSchool(UserToSchoolRequest request) {
         Map<String,Object> map = new HashMap<>();
 
-        Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
+        Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(request.getSchoolId());
         if (schoolOptional.isEmpty()) {
             map.put("message","School details not found !!");
             map.put("status",false);
             return ResponseEntity.badRequest().body(map);
         }
-        Optional<User> userOptional = userRepository.findById(userId);
+        Optional<User> userOptional = userRepository.findById(request.getUserId());
         if (userOptional.isEmpty()) {
             map.put("message","User details not found !!");
             map.put("status",false);
             return ResponseEntity.badRequest().body(map);
         }
+        User user = userOptional.get();
+        if(!user.getNameofMyTeam().equals(request.getTeamName())){
+            map.put("message","Given User ID and Team name is not matching !!");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+        }
 
         try {
-            schoolNameRepo.insertRecord(schoolId, userId);
+            schoolNameRepo.insertRecord(request.getSchoolId(), request.getUserId(),request.getTeamName());
         } catch (Exception ex) {
             ex.getMessage();
         }
@@ -242,16 +277,16 @@ public class SchoolNameService {
     }
 
 
-    public ResponseEntity<?> editUserToSchool(Long schoolId, Long userId,Long newUserId) {
+    public ResponseEntity<?> editUserToSchool(UserToSchoolRequest request,Long newUserId) {
         Map<String,Object> map = new HashMap<>();
 
-        Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
+        Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(request.getSchoolId());
         if (schoolOptional.isEmpty()) {
             map.put("message","School details not found !!");
             map.put("status",false);
             return ResponseEntity.badRequest().body(map);
         }
-        Optional<User> userOptional = userRepository.findById(userId);
+        Optional<User> userOptional = userRepository.findById(request.getUserId());
         if (userOptional.isEmpty()) {
             map.put("message","User details not found !!");
             map.put("status",false);
@@ -264,8 +299,15 @@ public class SchoolNameService {
             return ResponseEntity.badRequest().body(map);
         }
 
+        User user = newUserOptional.get();
+        if(!user.getNameofMyTeam().equals(request.getTeamName())){
+            map.put("message","Given User ID and Team name is not matching !!");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+        }
+
         try {
-            schoolNameRepo.updateRecord(schoolId,userId,newUserId);
+            schoolNameRepo.updateRecord(request.getSchoolId(),request.getUserId(),newUserId);
         } catch (Exception ex) {
             ex.getMessage();
         }
@@ -278,10 +320,10 @@ public class SchoolNameService {
 
     public ResponseEntity<?> findUsersAllocatedToSchool(Long schoolId) {
         Map<String,Object> map = new HashMap<>();
-        AtomicBoolean outReachAllocated = new AtomicBoolean(false);
+        /*AtomicBoolean outReachAllocated = new AtomicBoolean(false);
         AtomicBoolean outReachHeadAllocated = new AtomicBoolean(false);
         AtomicBoolean trainingAllocated = new AtomicBoolean(false);
-        AtomicBoolean trainingHeadAllocated = new AtomicBoolean(false);
+        AtomicBoolean trainingHeadAllocated = new AtomicBoolean(false); */
 
         Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
         if (schoolOptional.isEmpty()) {
@@ -289,8 +331,10 @@ public class SchoolNameService {
             map.put("status",false);
             return ResponseEntity.badRequest().body(map);
         }
-        List<Long> userId = schoolNameRepo.selectRecord(schoolId);
         Map<Long, UserSchoolInfo> userMap = new HashMap<>();
+
+        List<Long> userId = schoolNameRepo.selectRecord(schoolId);
+
 
         userId.stream().map(id -> {
             Optional<User> userOptional = userRepository.findById(id);
@@ -301,15 +345,15 @@ public class SchoolNameService {
                 userMap.put(id, userSchoolInfo);
 
                 // Check the name of the team and set the corresponding flags
-                if ("OutReach".equals(user.getNameofMyTeam())) {
+                /*if (AppConstants.OutReach.equals(user.getNameofMyTeam())) {
                     outReachAllocated.set(true);
-                } else if ("OutReach_Head".equals(user.getNameofMyTeam())) {
+                } else if (AppConstants.OutReach_Head.equals(user.getNameofMyTeam())) {
                     outReachHeadAllocated.set(true);
-                } else if ("TrainTheTrainer".equals(user.getNameofMyTeam())) {
+                } else if (AppConstants.TrainTheTrainer.equals(user.getNameofMyTeam())) {
                     trainingAllocated.set(true);
-                } else if ("TrainTheTrainer_Head".equals(user.getNameofMyTeam())) {
+                } else if (AppConstants.TrainTheTrainer_Head.equals(user.getNameofMyTeam())) {
                     trainingHeadAllocated.set(true);
-                }
+                } */
             }
 
             return null;
@@ -318,10 +362,10 @@ public class SchoolNameService {
         map.put("message",userMap);
         map.put("status",true);
         // Include outReachAllocated and trainingAllocated in the response
-        map.put("outReachAllocated",     outReachAllocated);
+        /*map.put("outReachAllocated",     outReachAllocated);
         map.put("outReachHeadAllocated", outReachHeadAllocated);
         map.put("trainingAllocated",     trainingAllocated);
-        map.put("trainingHeadAllocated", trainingHeadAllocated);
+        map.put("trainingHeadAllocated", trainingHeadAllocated); */
 
         return new ResponseEntity<>(map, HttpStatus.OK);
     }

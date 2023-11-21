@@ -2,6 +2,9 @@
    http://localhost:8081/swagger-ui/index.html#/
 ------------\n
 2) Table :
+   ALTER TABLE mbp.user_School_T ADD user_nameOfTeam varchar(50) not NULL;
+   commit;
+4) 
    SELECT * FROM mbp.users;
    SELECT * FROM mbp.user_School_T;
    SELECT * FROM mbp.token;

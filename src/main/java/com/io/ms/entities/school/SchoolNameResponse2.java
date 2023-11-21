@@ -15,10 +15,12 @@ public class SchoolNameResponse2 {
 
     private Long id;
     private String name;
-    //private String code;
     private String email;
     private String city;
     private String contactNum1;
     private String pincode;
+    private Boolean outReachAllocated;
+    private Boolean outReachHeadAllocated;
+    private Boolean trainingHeadAllocated;
 
 }

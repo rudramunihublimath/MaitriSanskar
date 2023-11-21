@@ -1,6 +1,7 @@
 package com.io.ms.controller;
 
 import com.io.ms.entities.school.SchoolNameRequest;
+import com.io.ms.entities.school.UserToSchoolRequest;
 import com.io.ms.service.SchoolNameService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,23 +56,15 @@ public class SchoolNameController {
         return schoolNameService.findAllSchoolInCity(cities);
     }
 
-    /*
-    // This service is for Outreach Team -  to find based on user table cityAllocated & schoolAllocated
-    @GetMapping(value = "/Secured/MBP/School/findAllSchoolForGivenCityndSchoolName")
-    public ResponseEntity<?> findAllSchoolForGivenCityndSchoolName(@RequestParam String schoolId)  {
-        return schoolNameService.findAllSchoolForGivenCityndSchoolName(schoolId);
-    }
-    */
-
     @PostMapping(value = "/Secured/MBP/School/AddUserToSchool")
-    public ResponseEntity<?> addUserToSchool(@RequestParam Long schoolId,@RequestParam Long userId)  {
-        return schoolNameService.addUserToSchool(schoolId,userId);
+    public ResponseEntity<?> addUserToSchool(@RequestBody UserToSchoolRequest request)  {
+        return schoolNameService.addUserToSchool(request);
     }
 
     @PutMapping(value = "/Secured/MBP/School/EditUserToSchool")
-    public ResponseEntity<?> editUserToSchool(@RequestParam Long schoolId,@RequestParam Long userId,
+    public ResponseEntity<?> editUserToSchool(@RequestBody UserToSchoolRequest request,
                                               @RequestParam Long newUserId)  {
-        return schoolNameService.editUserToSchool(schoolId,userId,newUserId);
+        return schoolNameService.editUserToSchool(request,newUserId);
     }
 
 

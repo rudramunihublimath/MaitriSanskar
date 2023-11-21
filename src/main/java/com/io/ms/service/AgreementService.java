@@ -4,9 +4,7 @@ package com.io.ms.service;
 import com.io.ms.constant.AppConstants;
 import com.io.ms.dao.AgreementRepo;
 import com.io.ms.dao.SchoolNameRepo;
-import com.io.ms.entities.school.AgreementRequest;
-import com.io.ms.entities.school.AgreementResponse;
-import com.io.ms.entities.school.SchoolNameRequest;
+import com.io.ms.entities.school.*;
 import com.io.ms.exception.UserAppException;
 import com.io.ms.properties.AppProperties;
 import com.io.ms.utility.EmailUtils;
@@ -21,8 +19,10 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,16 +75,21 @@ public class AgreementService {
 
             // Check if there is an existing MBPFlagsRequest for the school
             Optional<AgreementRequest> agreementRequestOptional = agreementRepo.findById(schoolId);
+            List<String> emailList = schoolNameRepo.selectAllOutReachEmailId(schoolId);
+            String[] emailCC = emailList.toArray(String[]::new);
+
             if (agreementRequestOptional.isPresent()) {
                 AgreementRequest req = agreementRequestOptional.get();
 
-                if (payload.getAgreementCompleted().equals("Yes")) {
+                if (payload.getAgreementCompleted().equals("Yes") && emailList.size()>=3) {
                     // Do something when payloadValue is "Yes"
+                    System.out.println(emailList);
                     String email="rudra.hublimath@gmail.com";
+
                     String emailBody = readAgreementEmailBody(schoolNameRequest);
                     String subject = appProps.getMessages().get(AppConstants.AGREEMENT_EMAIL_SUB);
                     try {
-                        emailUtils.sendEmail(email, subject, emailBody);
+                        emailUtils.sendEmailWithCc(email,emailCC, subject, emailBody);
                     } catch (Exception e) {
                         logger.error(AppConstants.EXCEPTION_OCCURRED + e.getMessage(), e);
                         throw new UserAppException(e.getMessage());
@@ -94,6 +99,9 @@ public class AgreementService {
                     req.setAgreementCompleted("Yes");
                 } else {
                     req.setAgreementCompleted("No");
+                    map.put("message", "Please update Email id for Outreach and Training both ");
+                    map.put("status", false);
+                    return ResponseEntity.badRequest().body(map);
                 }
 
                 req.setAgreementCompletedDate(payload.getAgreementCompletedDate());
