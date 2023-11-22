@@ -62,4 +62,9 @@ public class UserController {
                                          @RequestParam("file") MultipartFile uploadfile)  {
         return loginService.uploadImage(userId,uploadfile);
     }
+
+    @PatchMapping(value="/Secured/MBP/Login/RemoveImage")
+    public ResponseEntity<?> removeImage(@RequestParam Long userId)  {
+        return loginService.removeImage(userId);
+    }
 }

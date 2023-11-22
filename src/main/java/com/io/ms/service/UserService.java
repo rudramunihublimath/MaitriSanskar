@@ -480,4 +480,22 @@ public class UserService {
         }
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
+
+    public ResponseEntity<?> removeImage(Long userId) {
+        Map<String,Object> map = new HashMap<>();
+
+        Optional<User> userOptional = userRepo.findById(userId);
+        if (userOptional.isEmpty()) {
+            map.put("message","User details not found !! "+userId);
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+        }
+
+        User user = userOptional.get();
+        user.setImageName("");
+        userRepo.save(user);
+        map.put("message","Image is removed from DB");
+        map.put("status",true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
 }
