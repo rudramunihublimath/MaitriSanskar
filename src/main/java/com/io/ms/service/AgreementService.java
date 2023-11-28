@@ -74,7 +74,7 @@ public class AgreementService {
             SchoolNameRequest schoolNameRequest = schoolOptional.get();
 
             // Check if there is an existing MBPFlagsRequest for the school
-            Optional<AgreementRequest> agreementRequestOptional = agreementRepo.findById(schoolId);
+            Optional<AgreementRequest> agreementRequestOptional = agreementRepo.findBySchool_Id(schoolId);
             List<String> emailList = schoolNameRepo.selectAllOutReachEmailId(schoolId);
             String[] emailCC = emailList.toArray(String[]::new);
 

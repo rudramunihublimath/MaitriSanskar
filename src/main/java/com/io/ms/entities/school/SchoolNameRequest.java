@@ -51,16 +51,16 @@ public class SchoolNameRequest {
     @Column(name = "board", nullable = false, length = 200)
     private List<String> board;
 
-    @Column(name = "contactNum1", nullable = false, length = 20)
+    @Column(name = "contactNum1", nullable = false, length = 100)
     private String contactNum1;
 
-    @Column(name = "contactNum2", nullable = false, length = 20)
+    @Column(name = "contactNum2", nullable = false, length = 100)
     private String contactNum2;
 
     @Column(name = " chainofID", nullable = true, length = 300)
     private List<Long> chainofID;
 
-    @Column(name = "address1", nullable = false, length = 60)
+    @Column(name = "address1", nullable = false, length = 150)
     private String address1;
 
     @Column(name = "address2", length = 60)

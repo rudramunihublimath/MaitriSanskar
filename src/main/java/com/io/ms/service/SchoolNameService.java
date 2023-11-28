@@ -33,8 +33,6 @@ public class SchoolNameService {
     private final SchoolPOCRepo schoolPOCRepo;
     @Autowired
     private final SchoolMBPMeetingRepo schoolMBPMeetingRepo;
-    //@Autowired
-    //private final OutReachRepo outReachRepo;
     @Autowired
     private final TrainingRepo trainingRepo;
     @Autowired
@@ -216,18 +214,6 @@ public class SchoolNameService {
         resp.setContactNum1(req.getContactNum1());
         resp.setPincode(req.getPincode());
 
-        /*
-        for (Map<Long, String> map : maps) {
-            for (Map.Entry<Long, String> entry : map.entrySet()) {
-                // Check the condition for the String value
-                if (AppConstants.OutReach.equals(entry.getValue()))
-                    outReachAllocated=true;
-                else if (AppConstants.OutReach_Head.equals(entry.getValue()))
-                    outReachHeadAllocated=true;
-                else if (AppConstants.TrainTheTrainer_Head.equals(entry.getValue()))
-                    trainingHeadAllocated=true;
-            }
-        } */
         for(String val: list){
             if (AppConstants.OutReach.equals(val))
                 outReachAllocated=true;
@@ -320,10 +306,6 @@ public class SchoolNameService {
 
     public ResponseEntity<?> findUsersAllocatedToSchool(Long schoolId) {
         Map<String,Object> map = new HashMap<>();
-        /*AtomicBoolean outReachAllocated = new AtomicBoolean(false);
-        AtomicBoolean outReachHeadAllocated = new AtomicBoolean(false);
-        AtomicBoolean trainingAllocated = new AtomicBoolean(false);
-        AtomicBoolean trainingHeadAllocated = new AtomicBoolean(false); */
 
         Optional<SchoolNameRequest> schoolOptional = schoolNameRepo.findById(schoolId);
         if (schoolOptional.isEmpty()) {
@@ -344,16 +326,6 @@ public class SchoolNameService {
                         user.getContactNum1(), user.getContactNum2(), user.getNameofMyTeam());
                 userMap.put(id, userSchoolInfo);
 
-                // Check the name of the team and set the corresponding flags
-                /*if (AppConstants.OutReach.equals(user.getNameofMyTeam())) {
-                    outReachAllocated.set(true);
-                } else if (AppConstants.OutReach_Head.equals(user.getNameofMyTeam())) {
-                    outReachHeadAllocated.set(true);
-                } else if (AppConstants.TrainTheTrainer.equals(user.getNameofMyTeam())) {
-                    trainingAllocated.set(true);
-                } else if (AppConstants.TrainTheTrainer_Head.equals(user.getNameofMyTeam())) {
-                    trainingHeadAllocated.set(true);
-                } */
             }
 
             return null;
@@ -361,12 +333,6 @@ public class SchoolNameService {
 
         map.put("message",userMap);
         map.put("status",true);
-        // Include outReachAllocated and trainingAllocated in the response
-        /*map.put("outReachAllocated",     outReachAllocated);
-        map.put("outReachHeadAllocated", outReachHeadAllocated);
-        map.put("trainingAllocated",     trainingAllocated);
-        map.put("trainingHeadAllocated", trainingHeadAllocated); */
-
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }

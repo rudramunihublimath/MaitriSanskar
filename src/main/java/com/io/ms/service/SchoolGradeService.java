@@ -52,6 +52,12 @@ public class SchoolGradeService {
             map.put("status",false);
             return ResponseEntity.badRequest().body(map);
         }
+
+        if(payload.getTotalStudentCount()<payload.getBooksGivenCount()){
+            map.put("message","Books given count should not be more than Total Count");
+            map.put("status",true);
+            return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+        }
         SchoolGradeRequest req= new SchoolGradeRequest();
         req.setId(payload.getId());
         req.setYear(payload.getYear());

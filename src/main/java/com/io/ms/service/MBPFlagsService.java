@@ -85,7 +85,7 @@ public class MBPFlagsService {
             SchoolNameRequest schoolNameRequest = schoolOptional.get();
 
             // Check if there is an existing MBPFlagsRequest for the school
-            Optional<MBPFlagsRequest> existingMBPFlagsOptional = mbpFlagsRepo.findById(schoolId);
+            Optional<MBPFlagsRequest> existingMBPFlagsOptional = mbpFlagsRepo.findBySchool_Id(schoolId);
             if (existingMBPFlagsOptional.isPresent()) {
                 MBPFlagsRequest req = existingMBPFlagsOptional.get();
 
