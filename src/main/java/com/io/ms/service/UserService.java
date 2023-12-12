@@ -152,7 +152,7 @@ public class UserService {
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
-        saveUserToken(user, jwtToken);
+        saveUserTokenV2(user, jwtToken);
 
         //tokenRepository.deleteUserTokenByID(user.getId());
 
@@ -266,6 +266,17 @@ public class UserService {
 
         // Save the token (either the updated or new one)
         tokenRepository.save(existingToken);
+    }
+
+    private void saveUserTokenV2(User user, String jwtToken) {
+        Token t= new Token();
+        t.setId(user.getId());
+        t.setExpired(false);
+        t.setRevoked(false);
+        t.setToken(jwtToken);
+        t.setTokenType(TokenType.BEARER);
+        t.setUser(user);
+        tokenRepository.save(t);
     }
 
     private void revokeAllUserTokens(User user) {
