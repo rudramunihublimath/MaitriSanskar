@@ -29,7 +29,7 @@ public class UserResponse {
     private String instaID;
     private String pannum;
     private String address1;
-    private String address2;
+    //private String address2;
     private String pincode;
     private String profileActive;
     private Long profileNOTActiveUpdatedby;

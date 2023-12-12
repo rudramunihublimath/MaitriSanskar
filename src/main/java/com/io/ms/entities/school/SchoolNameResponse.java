@@ -32,7 +32,7 @@ public class SchoolNameResponse {
     private String contactNum2;
     private List<Long> chainofID;
     private String address1;
-    private String address2;
+    //private String address2;
     private String pincode;
     private String websiteURL;
     private String linkdinID;

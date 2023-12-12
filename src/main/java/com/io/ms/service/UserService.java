@@ -87,7 +87,7 @@ public class UserService {
         reg.setInstaID(payload.getInstaID());
         reg.setPannum(payload.getPannum());
         reg.setAddress1(payload.getAddress1());
-        reg.setAddress2(payload.getAddress2());
+        //reg.setAddress2(payload.getAddress2());
         reg.setPincode(payload.getPincode());
         reg.setProfileActive("Yes");
         if(payload.getNameofMyTeam().equals("Central_Mool")){
@@ -130,6 +130,12 @@ public class UserService {
             //return new ResponseEntity<String>("User not found. Please register !! ", HttpStatus.NOT_FOUND);
         }
         User user = userOptional.get();
+
+        if(!user.getProfileActive().equals("Yes")){
+            map.put("message","Your Profile is not ACTIVE. Please contact Central Mool Team ");
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+        }
 
         //validate password
         boolean isPasswordValid = isValidatePassword(payload, user);
@@ -355,7 +361,7 @@ public class UserService {
         reg.setInstaID(payload.getInstaID());
         reg.setPannum(payload.getPannum());
         reg.setAddress1(payload.getAddress1());
-        reg.setAddress2(payload.getAddress2());
+        //reg.setAddress2(payload.getAddress2());
         reg.setPincode(payload.getPincode());
         reg.setProfileActive("Yes");
         reg.setReportingmanagerId(payload.getReportingmanagerId());

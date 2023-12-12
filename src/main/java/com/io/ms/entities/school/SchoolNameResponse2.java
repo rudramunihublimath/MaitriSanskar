@@ -19,6 +19,7 @@ public class SchoolNameResponse2 {
     private String city;
     private String contactNum1;
     private String pincode;
+    private String address1;
     private Boolean outReachAllocated;
     private Boolean outReachHeadAllocated;
     private Boolean trainingHeadAllocated;

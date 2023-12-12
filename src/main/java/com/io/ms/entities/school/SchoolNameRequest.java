@@ -63,8 +63,8 @@ public class SchoolNameRequest {
     @Column(name = "address1", nullable = false, length = 150)
     private String address1;
 
-    @Column(name = "address2", length = 60)
-    private String address2;
+    //@Column(name = "address2", length = 60)
+    //private String address2;
 
     @Column(name = "pincode", nullable = false,length = 12)
     private String pincode;

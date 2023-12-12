@@ -30,7 +30,7 @@ public class CommonMethods {
         resp.setInstaID(user.getInstaID());
         resp.setPannum(user.getPannum());
         resp.setAddress1(user.getAddress1());
-        resp.setAddress2(user.getAddress2());
+        //resp.setAddress2(user.getAddress2());
         resp.setPincode(user.getPincode());
         resp.setProfileActive(user.getProfileActive());
         resp.setReportingmanagerId(user.getReportingmanagerId());

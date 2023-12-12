@@ -63,7 +63,7 @@ public class SchoolNameService {
         sc.setContactNum2(payload.getContactNum2());
         sc.setChainofID(payload.getChainofID());
         sc.setAddress1(payload.getAddress1());
-        sc.setAddress2(payload.getAddress2());
+        //sc.setAddress2(payload.getAddress2());
         sc.setPincode(payload.getPincode());
         sc.setWebsiteURL(payload.getWebsiteURL());
         sc.setLinkdinID(payload.getLinkdinID());
@@ -110,7 +110,7 @@ public class SchoolNameService {
         sc.setContactNum2(req.getContactNum2());
         sc.setChainofID(req.getChainofID());
         sc.setAddress1(req.getAddress1());
-        sc.setAddress2(req.getAddress2());
+        //sc.setAddress2(req.getAddress2());
         sc.setPincode(req.getPincode());
         sc.setWebsiteURL(req.getWebsiteURL());
         sc.setLinkdinID(req.getLinkdinID());
@@ -148,7 +148,7 @@ public class SchoolNameService {
         sc.setContactNum2(payload.getContactNum2());
         sc.setChainofID(payload.getChainofID());
         sc.setAddress1(payload.getAddress1());
-        sc.setAddress2(payload.getAddress2());
+        //sc.setAddress2(payload.getAddress2());
         sc.setPincode(payload.getPincode());
         sc.setWebsiteURL(payload.getWebsiteURL());
         sc.setLinkdinID(payload.getLinkdinID());
@@ -213,6 +213,7 @@ public class SchoolNameService {
         resp.setCity(req.getCity());
         resp.setContactNum1(req.getContactNum1());
         resp.setPincode(req.getPincode());
+        resp.setAddress1(req.getAddress1());
 
         for(String val: list){
             if (AppConstants.OutReach.equals(val))

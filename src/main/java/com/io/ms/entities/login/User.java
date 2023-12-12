@@ -94,11 +94,11 @@ public class User implements UserDetails {
   @Column(name = "pannum", nullable = false, length = 15)
   private String pannum;
 
-  @Column(name = "address1", nullable = false, length = 60)
+  @Column(name = "address1", nullable = false, length = 120)
   private String address1;
 
-  @Column(name = "address2", length = 60)
-  private String address2;
+  //@Column(name = "address2", length = 60)
+  //private String address2;
 
   @Column(name = "pincode", nullable = false,length = 12)
   private String pincode;
