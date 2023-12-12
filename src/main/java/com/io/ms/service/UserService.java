@@ -112,7 +112,8 @@ public class UserService {
 
         var savedUser =userRepo.save(reg);
         var jwtToken = jwtService.generateToken(reg);
-        saveUserToken(savedUser, jwtToken);
+        //saveUserToken(savedUser, jwtToken);
+        saveUserTokenV2(savedUser, jwtToken);
 
         map.put("message","Your account has been created");
         map.put("status",true);
@@ -309,7 +310,8 @@ public class UserService {
             if (jwtService.isTokenValid(refreshToken, user)) {
                 var accessToken = jwtService.generateToken(user);
                 revokeAllUserTokens(user);
-                saveUserToken(user, accessToken);
+                //saveUserToken(user, accessToken);
+                saveUserTokenV2(user, accessToken);
                 var authResponse = AuthenticationResponse.builder()
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
