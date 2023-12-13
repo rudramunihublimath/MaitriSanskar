@@ -33,6 +33,7 @@ public class CommonMethods {
         //resp.setAddress2(user.getAddress2());
         resp.setPincode(user.getPincode());
         resp.setProfileActive(user.getProfileActive());
+        resp.setProfileNOTActiveUpdatedby(user.getProfileNOTActiveUpdatedby());
         resp.setReportingmanagerId(user.getReportingmanagerId());
         resp.setReportingmanagerName(user.getReportingmanagerName());
         resp.setNameofMyTeam(user.getNameofMyTeam());
