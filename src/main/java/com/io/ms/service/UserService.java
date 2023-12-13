@@ -376,7 +376,7 @@ public class UserService {
         reg.setAddress1(payload.getAddress1());
         //reg.setAddress2(payload.getAddress2());
         reg.setPincode(payload.getPincode());
-        reg.setProfileActive("Yes");
+        reg.setProfileActive(payload.getProfileActive());
         reg.setReportingmanagerId(payload.getReportingmanagerId());
         String fullname = findUserName(payload.getReportingmanagerId());
         if(fullname.equals("")){
