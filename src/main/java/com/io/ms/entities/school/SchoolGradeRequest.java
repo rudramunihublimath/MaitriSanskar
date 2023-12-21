@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "school_grades")
+@Table(name = "school_grades_07")
 public class SchoolGradeRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

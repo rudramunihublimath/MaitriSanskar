@@ -13,13 +13,14 @@
    SELECT * FROM mbp.cities_master;
    select * from mbp.MBPTeam;
 
-   SELECT * FROM mbp.school;
-   SELECT * FROM mbp.school_poc;
-   SELECT * FROM mbp.school_meetings;
-   SELECT * FROM mbp.training;  
-   SELECT * FROM mbp.MBPFlags;
-   SELECT * FROM mbp.agreement;
-   SELECT * FROM mbp.school_grades;
+   SELECT * FROM mbp.school_01;
+   SELECT count(*) FROM mbp.school_01;
+   SELECT * FROM mbp.school_poc_02;
+   SELECT * FROM mbp.school_meetings_03;
+   SELECT * FROM mbp.training_04;  
+   SELECT * FROM mbp.mbpflags_05;
+   SELECT * FROM mbp.agreement_06;
+   SELECT * FROM mbp.school_grades_07;
    select * from mbp.SchoolBoard;
 
  ------------\n

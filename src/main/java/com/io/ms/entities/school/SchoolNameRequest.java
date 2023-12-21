@@ -20,7 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "school")
+@Table(name = "school_01")
 public class SchoolNameRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,7 +69,7 @@ public class SchoolNameRequest {
     @Column(name = "pincode", nullable = false,length = 12)
     private String pincode;
 
-    @Column(name = "websiteURL", length = 100)
+    @Column(name = "websiteURL", length = 120)
     private String websiteURL;
 
     @Column(name = "linkdinid", length = 100)

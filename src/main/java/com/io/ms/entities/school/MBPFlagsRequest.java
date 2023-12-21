@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "mbpflags")
+@Table(name = "mbpflags_05")
 public class MBPFlagsRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

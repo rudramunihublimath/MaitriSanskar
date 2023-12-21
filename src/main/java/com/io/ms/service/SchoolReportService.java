@@ -4,6 +4,7 @@ import com.io.ms.entities.school.ResponseMessage;
 import com.io.ms.entities.school.SchoolNameRequest;
 import com.io.ms.entities.school.SchoolNameTutorial;
 import com.io.ms.utility.CSVHelper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ public class SchoolReportService {
     @Autowired
     private SchoolNameService schoolNameService;
 
+    @Transactional
     public ResponseEntity<?> importSchoolListInBulk(MultipartFile file) {
         Map<String,Object> map = new HashMap<>();
 
@@ -33,8 +35,9 @@ public class SchoolReportService {
             try {
                 try {
                     List<SchoolNameTutorial> list = CSVHelper.csvToTutorials(file.getInputStream());
-
+                    int i=1;
                     for (SchoolNameTutorial schoolNameTutorial : list) {
+                        System.out.println(i);i++;
                         SchoolNameRequest req= new SchoolNameRequest();
                         req.setCountry(schoolNameTutorial.getCountry());
                         req.setState(schoolNameTutorial.getState());

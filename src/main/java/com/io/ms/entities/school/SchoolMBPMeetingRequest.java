@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "school_meetings")
+@Table(name = "school_meetings_03")
 public class SchoolMBPMeetingRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
