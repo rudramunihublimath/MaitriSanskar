@@ -30,16 +30,34 @@ Insert Into mbp.MBPTeam Values(1,'Central_Mool');
 Insert Into mbp.MBPTeam Values(2,'OutReach_Head');
 Insert Into mbp.MBPTeam Values(3,'OutReach');
 Insert Into mbp.MBPTeam Values(4,'TrainTheTrainer_Head');
+
+Insert Into mbp.TargetPhase Values(1,'MiniPilot');
+Insert Into mbp.TargetPhase Values(2,'Pilot');
+
 Insert Into mbp.SchoolBoard Values(1,'CBSE');
 Insert Into mbp.SchoolBoard Values(2,'ICSE');
 Insert Into mbp.SchoolBoard Values(3,'IB');
 Insert Into mbp.SchoolBoard Values(4,'NIOS');
 Insert Into mbp.SchoolBoard Values(5,'AISSCE');
 Insert Into mbp.SchoolBoard Values(6,'SSC');
-Insert Into mbp.TargetPhase Values(1,'MiniPilot');
-Insert Into mbp.TargetPhase Values(2,'Pilot');
-commit;
 
+Insert Into mbp.SchoolBoard Values(	7	,'IPC ');
+Insert Into mbp.SchoolBoard Values(	8	,'IBDP ');
+Insert Into mbp.SchoolBoard Values(	9	,'KED ');
+Insert Into mbp.SchoolBoard Values(	10	,'CAIE ');
+Insert Into mbp.SchoolBoard Values(	11	,'PYP');
+Insert Into mbp.SchoolBoard Values(	12	,'IGSCE');
+Insert Into mbp.SchoolBoard Values(	13	,'HSC');
+Insert Into mbp.SchoolBoard Values(	14	,'IGCSE');
+Insert Into mbp.SchoolBoard Values(	15	,'CES');
+Insert Into mbp.SchoolBoard Values(	16	,'ISC');
+Insert Into mbp.SchoolBoard Values(	17	,'CISCE');
+Insert Into mbp.SchoolBoard Values(	18	,'CIPP');
+Insert Into mbp.SchoolBoard Values(	19	,'IEYC');
+Insert Into mbp.SchoolBoard Values(	20	,'CIE');
+Insert Into mbp.SchoolBoard Values(	21	,'IES');
+Insert Into mbp.SchoolBoard Values(	22	,'Cambridge');
+commit;
 
 ------------\n
 
