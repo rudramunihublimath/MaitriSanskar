@@ -4,10 +4,13 @@ package com.io.ms.service;
 import com.io.ms.constant.AppConstants;
 import com.io.ms.dao.AgreementRepo;
 import com.io.ms.dao.SchoolNameRepo;
+import com.io.ms.dao.UserRepository;
+import com.io.ms.entities.login.User;
 import com.io.ms.entities.school.*;
 import com.io.ms.exception.UserAppException;
 import com.io.ms.properties.AppProperties;
 import com.io.ms.utility.EmailUtils;
+import com.io.ms.utility.GlobalUtility;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +21,11 @@ import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +35,8 @@ public class AgreementService {
     private final AgreementRepo agreementRepo;
     @Autowired
     private final SchoolNameRepo schoolNameRepo;
+    @Autowired
+    private final UserRepository userRepository;
     @Autowired
     private AppProperties appProps;
     @Autowired
@@ -66,6 +71,7 @@ public class AgreementService {
         }
     }
 
+    // Generate Email to School and all Outreach Team
     public ResponseEntity<?> editAgreementInfo(AgreementRequest payload,Long schoolId) throws UserAppException {
         Map<String,Object> map = new HashMap<>();
 
@@ -80,13 +86,20 @@ public class AgreementService {
 
             if (agreementRequestOptional.isPresent()) {
                 AgreementRequest req = agreementRequestOptional.get();
+                String link= payload.getAgreementScanCopyLink();
 
-                if (payload.getAgreementCompleted().equals("Yes") && emailList.size()>=3) {
+                Optional<String> otHeadValue = schoolNameRepo.selectOutreachHeadEmailId(schoolId);
+                String otHeadEmail = otHeadValue.get();
+                Optional<User> userOptional = userRepository.findByEmail(otHeadEmail);
+
+                if (payload.getAgreementCompleted().equals("Yes") &&
+                     (link!=null) && emailList.size()>=3 && userOptional.isPresent()) {
                     // Do something when payloadValue is "Yes"
                     System.out.println(emailList);
                     String email="rudra.hublimath@gmail.com";
+                    User outreachHead = userOptional.get();
 
-                    String emailBody = readAgreementEmailBody(schoolNameRequest);
+                    String emailBody = readAgreementEmailBody(schoolNameRequest,outreachHead);
                     String subject = appProps.getMessages().get(AppConstants.AGREEMENT_EMAIL_SUB);
                     try {
                         emailUtils.sendEmailWithCc(email,emailCC, subject, emailBody);
@@ -129,10 +142,10 @@ public class AgreementService {
         }
     }
 
-    private String readAgreementEmailBody(SchoolNameRequest req) throws UserAppException {
+    private String readAgreementEmailBody(SchoolNameRequest req, User user) throws UserAppException {
         StringBuilder sb = new StringBuilder(AppConstants.EMPTY_STR);
         String mailBody = AppConstants.EMPTY_STR;
-        String fileName = appProps.getMessages().get(AppConstants.TRAINING_EMAIL_BODY_FILE);
+        String fileName = appProps.getMessages().get(AppConstants.AGREEMENT_EMAIL_BODY_FILE);
         try (FileReader fr = new FileReader(fileName)) {
                 BufferedReader br = new BufferedReader(fr);
                 String line = br.readLine();
@@ -143,8 +156,18 @@ public class AgreementService {
                 }
                 br.close();
                 mailBody = sb.toString();
-                mailBody = mailBody.replace(AppConstants.SCHOOL_ID,String.valueOf(req.getId()));
+                LocalDateTime currentDateTime = LocalDateTime.now();
+                mailBody = mailBody.replace(AppConstants.TODAYS_DATE,String.valueOf(currentDateTime.format(GlobalUtility.generateDateFormat1())));
                 mailBody = mailBody.replace(AppConstants.SCHOOL_NAME, req.getName());
+                mailBody = mailBody.replace(AppConstants.SCHOOL_ADDR, req.getAddress1());
+                mailBody = mailBody.replace(AppConstants.SCHOOL_CITY, req.getCity());
+                mailBody = mailBody.replace(AppConstants.SCHOOL_STATE, req.getState());
+                mailBody = mailBody.replace(AppConstants.SCHOOL_ZIP, req.getPincode());
+                mailBody = mailBody.replace(AppConstants.SCHOOL_ID,String.valueOf(req.getId()));
+                mailBody = mailBody.replace(AppConstants.OH_NAME, user.getFirstname()+" "+user.getLastname());
+                mailBody = mailBody.replace(AppConstants.OH_MOB, user.getContactNum1());
+                mailBody = mailBody.replace(AppConstants.OH_EMAIL, user.getEmail());
+
         } catch (Exception e) {
              logger.error(AppConstants.EXCEPTION_OCCURRED + e.getMessage(), e);
              throw new UserAppException(e.getMessage());

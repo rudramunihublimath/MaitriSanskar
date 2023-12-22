@@ -22,4 +22,7 @@ public class SchoolNameTutorial {
     private String address1;
     private String pincode;
     private String websiteURL;
+    private String teacherfirstname;
+    private String teacherlastname;
+    private String designation;
 }

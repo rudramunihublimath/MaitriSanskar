@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class CSVHelper {
     public static String TYPE = "text/csv";
     static String[] HEADERs = { "country", "state", "city", "name" ,"board", "contactNum1","contactNum2", "email", "linkdinID",
-            "address1", "pincode", "websiteURL"};
+            "address1", "pincode", "websiteURL","teacherfirstname", "teacherlastname", "designation"};
 
     public static boolean hasCSVFormat(MultipartFile file) {
 
@@ -50,7 +50,10 @@ public class CSVHelper {
                         csvRecord.get("linkdinID"),
                         csvRecord.get("address1"),
                         csvRecord.get("pincode"),
-                        csvRecord.get("websiteURL")
+                        csvRecord.get("websiteURL"),
+                        csvRecord.get("teacherfirstname"),
+                        csvRecord.get("teacherlastname"),
+                        csvRecord.get("designation")
                 );
 
                 tutorials.add(tutorial);

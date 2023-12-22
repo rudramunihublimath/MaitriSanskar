@@ -1,5 +1,6 @@
 Hi Training Team,<br/>
 <br/>
+
 Our Deal is closed for below School. Please start the Training - <br/>
 <br/>
 School_Id   : {SchoolId}<br/>

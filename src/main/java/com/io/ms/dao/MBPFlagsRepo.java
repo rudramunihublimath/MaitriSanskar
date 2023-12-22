@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface MBPFlagsRepo extends JpaRepository<MBPFlagsRequest, Long> {
 
-    @Query(value = "select a.* from mbp.MBPFlags a where a.school_id= ?1 ", nativeQuery = true)
+    @Query(value = "select a.* from mbp.MBPFlags_05 a where a.school_id= ?1 ", nativeQuery = true)
     Optional<MBPFlagsRequest> findBySchool_Id(Long schoolId);
 }

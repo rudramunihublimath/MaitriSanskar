@@ -1,9 +1,12 @@
 package com.io.ms.service;
 
 import com.io.ms.dao.SchoolAdminReport1Impl;
+import com.io.ms.dao.SchoolNameRepo;
+import com.io.ms.dao.SchoolPOCRepo;
 import com.io.ms.entities.school.SchoolAdminReport1;
 import com.io.ms.entities.school.SchoolNameRequest;
 import com.io.ms.entities.school.SchoolNameTutorial;
+import com.io.ms.entities.school.SchoolPOCRequest;
 import com.io.ms.utility.CSVHelper;
 import com.io.ms.utility.ExcelGenerator;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,6 +33,12 @@ public class SchoolReportService {
     private SchoolNameService schoolNameService;
     @Autowired
     private SchoolAdminReport1Impl schoolAdminReport1;
+    @Autowired
+    private SchoolPOCService schoolPOCService;
+    @Autowired
+    private final SchoolNameRepo schoolNameRepo;
+    @Autowired
+    private final SchoolPOCRepo schoolPOCRepo;
 
     @Transactional
     public ResponseEntity<?> importSchoolListInBulk(MultipartFile file) {
@@ -39,9 +48,9 @@ public class SchoolReportService {
             try {
                 try {
                     List<SchoolNameTutorial> list = CSVHelper.csvToTutorials(file.getInputStream());
-                    int i=1;
+                    //int i=1;
                     for (SchoolNameTutorial schoolNameTutorial : list) {
-                        System.out.println(i);i++;
+                        //System.out.println(i);i++;
                         SchoolNameRequest req= new SchoolNameRequest();
                         req.setCountry(schoolNameTutorial.getCountry());
                         req.setState(schoolNameTutorial.getState());
@@ -55,7 +64,20 @@ public class SchoolReportService {
                         req.setAddress1(schoolNameTutorial.getAddress1());
                         req.setPincode(schoolNameTutorial.getPincode());
                         req.setWebsiteURL(schoolNameTutorial.getWebsiteURL());
-                        schoolNameService.registerSchoolName(req);
+                        SchoolNameRequest schRequest = schoolNameService.registerSchoolName_V2(req);
+
+                        SchoolPOCRequest req2 = new SchoolPOCRequest();
+                        req2.setTeacherfirstname(schoolNameTutorial.getTeacherfirstname());
+                        req2.setTeacherlastname(schoolNameTutorial.getTeacherlastname());
+                        req2.setDesignation(schoolNameTutorial.getDesignation());
+                        req2.setContactNum1(null);
+                        req2.setContactNum2(null);
+                        req2.setLinkdinID(null);
+                        req2.setEmail(null);
+                        req2.setFirstContact(null);
+                        req2.setSchoolNameRequest(schRequest);
+
+                        schoolPOCRepo.save(req2);
                     }
 
                 } catch (IOException e) {
@@ -87,7 +109,7 @@ public class SchoolReportService {
         String currentDateTime = dateFormatter.format(new Date());
 
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=student" + currentDateTime + ".xlsx";
+        String headerValue = "attachment; filename=SchoolAdminReport_" + currentDateTime + ".xlsx";
         response.setHeader(headerKey, headerValue);
 
         ExcelGenerator generator = new ExcelGenerator(list);

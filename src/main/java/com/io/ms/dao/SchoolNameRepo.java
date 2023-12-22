@@ -36,6 +36,9 @@ public interface SchoolNameRepo extends JpaRepository<SchoolNameRequest, Long> {
     @Query(value = "select u.email from mbp.users u where u.id in (select ust.user_id from mbp.user_school_t ust where ust.school_id= ?1 ) and u.nameofMyTeam='TrainTheTrainer_Head' ", nativeQuery = true)
     Optional<String> selectTrainingEmailId(Long schoolId);
 
+    @Query(value = "select u.email from mbp.users u where u.id in (select ust.user_id from mbp.user_school_t ust where ust.school_id= ?1 ) and u.nameofMyTeam='OutReach_Head' ", nativeQuery = true)
+    Optional<String> selectOutreachHeadEmailId(Long schoolId);
+
     @Query(value = "select u.email from mbp.users u where u.id in (select ust.user_id from mbp.user_school_t ust where ust.school_id= ?1 ) ", nativeQuery = true)
     List<String> selectAllOutReachEmailId(Long schoolId);
 }

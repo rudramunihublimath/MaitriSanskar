@@ -26,20 +26,20 @@ public class SchoolPOCRequest {
     @Column(name = "teacherlastname", nullable = false, length = 30)
     private String teacherlastname;
 
-    @Column(name = "designation", nullable = false, length = 25)
+    @Column(name = "designation", nullable = false, length = 30)
     private String designation;
 
-    @Column(name = "contactNum1", nullable = false, length = 20)
+    @Column(name = "contactNum1", nullable = true, length = 20)
     private String contactNum1;
 
-    @Column(name = "contactNum2", nullable = false, length = 20)
+    @Column(name = "contactNum2", nullable = true, length = 20)
     private String contactNum2;
 
     @Column(name = "linkdinid", length = 100)
     private String linkdinID;
 
     @Email
-    @Column(name = "email", nullable = false, length = 50)
+    @Column(name = "email", nullable = true, length = 50)
     private String email;
 
     @Column(name = "firstContact", length = 10)

@@ -14,7 +14,7 @@ public class GlobalUtility {
 
 
     public static DateTimeFormatter generateDateFormat1() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         return formatter;
     }
 
@@ -22,5 +22,6 @@ public class GlobalUtility {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         return formatter;
     }
+
 
 }

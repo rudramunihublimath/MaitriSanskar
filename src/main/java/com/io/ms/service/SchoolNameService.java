@@ -4,6 +4,7 @@ import com.io.ms.constant.AppConstants;
 import com.io.ms.dao.*;
 import com.io.ms.entities.login.User;
 import com.io.ms.entities.school.*;
+import com.io.ms.utility.AESEncryption;
 import com.io.ms.utility.GlobalUtility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -53,7 +56,9 @@ public class SchoolNameService {
         SchoolNameRequest sc=new SchoolNameRequest();
         sc.setName(payload.getName());
         sc.setCode(generateCode(payload.getName()));
-        //sc.setPassword("");
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd");
+        sc.setPassword(AESEncryption.encrypt(GlobalUtility.generateSerialNumber()+"@"+currentDateTime.format(formatter)));
         sc.setEmail(payload.getEmail());
         sc.setCountry(payload.getCountry());
         sc.setState(payload.getState());
@@ -79,6 +84,48 @@ public class SchoolNameService {
         map.put("message","School is registered");
         map.put("status",true);
         return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+    public SchoolNameRequest registerSchoolName_V2(SchoolNameRequest payload) throws Exception {
+        Map<String,Object> map = new HashMap<>();
+
+        // validated if emailID already present
+        if(schoolNameRepo.existsByEmail(payload.getEmail())){
+            //map.put("message","School is already registered with this email");
+            //map.put("status",false);
+            //return ResponseEntity.badRequest().body(map);
+            throw new Exception("School is already registered with this email");
+        }
+
+        SchoolNameRequest sc=new SchoolNameRequest();
+        sc.setName(payload.getName());
+        sc.setCode(generateCode(payload.getName()));
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd");
+        sc.setPassword(AESEncryption.encrypt(GlobalUtility.generateSerialNumber()+"@"+currentDateTime.format(formatter)));
+        sc.setEmail(payload.getEmail());
+        sc.setCountry(payload.getCountry());
+        sc.setState(payload.getState());
+        sc.setCity(payload.getCity());
+        sc.setBoard(payload.getBoard());
+        sc.setContactNum1(payload.getContactNum1());
+        sc.setContactNum2(payload.getContactNum2());
+        sc.setChainofID(payload.getChainofID());
+        sc.setAddress1(payload.getAddress1());
+        //sc.setAddress2(payload.getAddress2());
+        sc.setPincode(payload.getPincode());
+        sc.setWebsiteURL(payload.getWebsiteURL());
+        sc.setLinkdinID(payload.getLinkdinID());
+        sc.setFacebookID(payload.getFacebookID());
+        sc.setInstaID(payload.getInstaID());
+        sc.setTargetPhase(payload.getTargetPhase());
+        sc.setMbpPersonName(payload.getMbpPersonName());
+        sc.setMbpPersonContactNum(payload.getMbpPersonContactNum());
+        sc.setMbpPersonEmail(payload.getMbpPersonEmail());
+        sc.setRefPersonName(payload.getRefPersonName());
+        sc.setRefPersonContactNum(payload.getRefPersonContactNum());
+        SchoolNameRequest req = schoolNameRepo.save(sc);
+        return req;
     }
 
     private String generateCode(String schoolName) {
@@ -154,7 +201,7 @@ public class SchoolNameService {
         sc.setLinkdinID(payload.getLinkdinID());
         sc.setFacebookID(payload.getFacebookID());
         sc.setInstaID(payload.getInstaID());
-        //sc.setTargetPhase(payload.getTargetPhase());
+        sc.setTargetPhase(payload.getTargetPhase());
         sc.setMbpPersonName(payload.getMbpPersonName());
         sc.setMbpPersonContactNum(payload.getMbpPersonContactNum());
         sc.setMbpPersonEmail(payload.getMbpPersonEmail());

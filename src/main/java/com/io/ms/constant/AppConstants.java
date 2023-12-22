@@ -21,6 +21,14 @@ public class AppConstants {
 
        public static final String SCHOOL_ID = "{SchoolId}";
        public static final String SCHOOL_NAME = "{SchoolName}";
+       public static final String SCHOOL_ADDR = "{SchoolAddress}";
+       public static final String SCHOOL_CITY  = "{SchoolCity}";
+       public static final String SCHOOL_STATE = "{SchoolState}";
+       public static final String SCHOOL_ZIP   = "{SchoolZip}";
+       public static final String TODAYS_DATE   = "{TODAYS_DATE}";
+       public static final String OH_NAME        = "{OUTREACH_HEADName}";
+       public static final String OH_MOB         = "{OUTREACH_MOB}";
+       public static final String OH_EMAIL       = "{OUTREACH_EMAIL}";
 
        public static final String IMAGE_PATH = "E:\\MaitriBodh__Dada\\Maitri Sanskar\\IMAGE_TEST\\";
 

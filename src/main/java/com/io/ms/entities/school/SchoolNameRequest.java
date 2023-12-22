@@ -32,7 +32,7 @@ public class SchoolNameRequest {
     @Column(name = "code", unique = true, nullable = false, length = 40)
     private String code;
 
-    @Column(name = "password", nullable = true, length = 60)
+    @Column(name = "password", nullable = true, length = 100)
     private String password;
 
     @Email

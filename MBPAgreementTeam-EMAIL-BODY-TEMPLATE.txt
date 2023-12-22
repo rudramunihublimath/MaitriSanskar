@@ -1,10 +1,35 @@
 Hi,<br/>
 <br/>
-We completed agreement with you <br/>
+------------------------------------- MAITRI SANSKAR ------------------------------------- <br/>
+                                                                          Date: {TODAYS_DATE}
 <br/>
-School_Id   : {SchoolId}<br/>
-School_Name : {SchoolName}<br/>
+School Name    : {SchoolName} <br/>
+School Address : {SchoolAddress} <br/>
+City,State,Zip : {SchoolCity},{SchoolState},{SchoolZip} <br/>
+School Id      : {SchoolId}   <br/>
 <br/>
+Dear Principal,<br/>
+<br/>
+                                Welcome to Maitri Sanskar Program <br/>
 
-Thanks & Regards,<br/>
-MaitriSanskar Team<br/>
+We are delighted to welcome you and your school/institution to the Maitri Sanskar curriculum. <br/>
+We are happy that you have given us an opportunity for the holistic development of your students.<br/>
+The Maitri Sanskar curriculum is designed to help students learn and practice the values of Satya (Truth), Kshama (Forgiveness), Maitri (Friendship), and Seva (Selfless Service), in their daily lives. It is based on the principles of positive psychology, character education, and moral philosophy. The curriculum aims to foster the moral and emotional growth of students, as well as their academic and social skills.
+The curriculum consists of the above Five modules. <br/>
+<br/>
+Each module has a set of lessons, activities, stories, games, and assessments that are aligned with the learning objectives and outcomes. <br/>
+The curriculum is adaptable to suit the needs and preferences of different schools/institutions, teachers, and students. <br/>
+As a partner of the Maitri Sanskar curriculum, you will receive the following benefits: <br/>
+•	Access to the online platform where you can access the curriculum materials . <br/>
+•	Training and support from our team of qualified and experienced educators who will guide you through the implementation process and provide feedback and suggestions. <br/>
+•	Recognition and certification from the Maitri Sanskar as a school/institution that values and promotes moral education. <br/>
+We are committed to doing our best for the children and their families and help them become awesome human beings. We believe that by instilling the values of Satya (Truth), Kshama (Forgiveness), Maitri (Friendship), and Seva (Selfless Service),  in them, we can make a positive difference in their lives and in the world. <br/>
+We look forward to working with you and your school/institution. Please feel free to contact us if you have any questions or concerns. We will be happy to assist you. <br/>
+<br/>
+<br/>
+You may contact {OUTREACH_HEADName} on Mobile # {OUTREACH_MOB} , and email on {OUTREACH_EMAIL} for any further information if required. <br/>
+Thanking you once again for giving us this opportunity to be able to be of assistance to your organization. <br/>
+<br/>
+Sincerely, <br/>
+For  Maitri Sanskar curriculum team <br/>
+{OUTREACH_HEADName} <br/>

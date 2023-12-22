@@ -81,7 +81,7 @@ public class ExcelGenerator {
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
             createCell(row, columnCount++, record.getState(), style);
-            createCell(row, columnCount++, record.getState(), style);
+            createCell(row, columnCount++, record.getCity(), style);
             createCell(row, columnCount++, record.getId(), style);
             createCell(row, columnCount++, record.getName(), style);
             createCell(row, columnCount++, record.getContactNum1(), style);

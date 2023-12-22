@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface AgreementRepo extends JpaRepository<AgreementRequest, Long> {
 
-    @Query(value = "select a.* from mbp.agreement a where a.school_id= ?1 ", nativeQuery = true)
+    @Query(value = "select a.* from mbp.agreement_06 a where a.school_id= ?1 ", nativeQuery = true)
     Optional<AgreementRequest> findBySchool_Id(Long schoolId);
 }
