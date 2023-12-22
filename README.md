@@ -58,6 +58,9 @@ Insert Into mbp.SchoolBoard Values(	19	,'IEYC');
 Insert Into mbp.SchoolBoard Values(	20	,'CIE');
 Insert Into mbp.SchoolBoard Values(	21	,'IES');
 Insert Into mbp.SchoolBoard Values(	22	,'Cambridge');
+Insert Into mbp.SchoolBoard Values(	23	,'MYP');
+Insert Into mbp.SchoolBoard Values(	24	,'CICSE');
+Insert Into mbp.SchoolBoard Values(	25	,'EYP');
 commit;
 
 ------------\n
