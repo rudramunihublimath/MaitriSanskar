@@ -41,7 +41,6 @@ Insert Into mbp.SchoolBoard Values(3,'IB');
 Insert Into mbp.SchoolBoard Values(4,'NIOS');
 Insert Into mbp.SchoolBoard Values(5,'AISSCE');
 Insert Into mbp.SchoolBoard Values(6,'SSC');
-
 Insert Into mbp.SchoolBoard Values(	7	,'IPC ');
 Insert Into mbp.SchoolBoard Values(	8	,'IBDP ');
 Insert Into mbp.SchoolBoard Values(	9	,'KED ');
