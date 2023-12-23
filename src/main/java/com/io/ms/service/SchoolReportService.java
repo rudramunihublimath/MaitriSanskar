@@ -1,8 +1,11 @@
 package com.io.ms.service;
 
+import com.io.ms.constant.AppConstants;
 import com.io.ms.dao.SchoolAdminReport1Impl;
 import com.io.ms.dao.SchoolNameRepo;
 import com.io.ms.dao.SchoolPOCRepo;
+import com.io.ms.dao.UserRepository;
+import com.io.ms.entities.login.User;
 import com.io.ms.entities.school.SchoolAdminReport1;
 import com.io.ms.entities.school.SchoolNameRequest;
 import com.io.ms.entities.school.SchoolNameTutorial;
@@ -36,9 +39,11 @@ public class SchoolReportService {
     @Autowired
     private SchoolPOCService schoolPOCService;
     @Autowired
-    private final SchoolNameRepo schoolNameRepo;
+    private SchoolNameRepo schoolNameRepo;
     @Autowired
-    private final SchoolPOCRepo schoolPOCRepo;
+    private SchoolPOCRepo schoolPOCRepo;
+    @Autowired
+    private UserRepository userRepository;
 
     @Transactional
     public ResponseEntity<?> importSchoolListInBulk(MultipartFile file) {
@@ -100,9 +105,27 @@ public class SchoolReportService {
         }
     }
 
-    public ResponseEntity<?> generateReport1(HttpServletResponse response, String state) throws IOException {
+    public void generateReport1(HttpServletResponse response, String state) throws IOException {
         Map<String,Object> map = new HashMap<>();
+
         List<SchoolAdminReport1> list = schoolAdminReport1.findByState(state); // main code
+
+        list.forEach(item -> {
+            List<Long> userIds = schoolNameRepo.selectRecord_OutReach(item.getId());
+            userIds.stream()
+                    .map(userRepository::findById)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .forEach(user -> {
+                        if (user.getNameofMyTeam().equals(AppConstants.OutReach_Head)) {
+                            item.setOutReachHead_name(user.getFirstname() + " " + user.getLastname());
+                            item.setOutReachHead_Mob(user.getContactNum1());
+                        } else if (user.getNameofMyTeam().equals(AppConstants.OutReach)) {
+                            item.setOutReach_name(user.getFirstname() + " " + user.getLastname());
+                            item.setOutReach_Mob(user.getContactNum1());
+                        }
+                    });
+        });
 
         response.setContentType("application/octet-stream");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
@@ -115,9 +138,9 @@ public class SchoolReportService {
         ExcelGenerator generator = new ExcelGenerator(list);
         generator.generateExcelFile(response);
 
-        map.put("message","Report1 generated successfully");
-        map.put("message2",list);
-        map.put("status",true);
-        return new ResponseEntity<>(map, HttpStatus.OK);
+        //map.put("message","Report1 generated successfully");
+        //map.put("message2",list);
+        //map.put("status",true);
+        //return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }

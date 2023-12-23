@@ -51,6 +51,10 @@ public class ExcelGenerator {
         createCell(row, 17, "Space", style);
         createCell(row, 18, "agreementCompleted", style);
         createCell(row, 19, "agreementCompletedDate", style);
+        createCell(row, 20, "outReachHead_name", style);
+        createCell(row, 21, "outReachHead_Mob", style);
+        createCell(row, 22, "outReach_name", style);
+        createCell(row, 23, "outReach_Mob", style);
     }
     private void createCell(Row row, int columnCount, Object valueOfCell, CellStyle style) {
         sheet.autoSizeColumn(columnCount);
@@ -103,6 +107,10 @@ public class ExcelGenerator {
 
             createCell(row, columnCount++, record.getAgreementCompleted(), style);
             createCell(row, columnCount++, record.getAgreementCompletedDate(), style);
+            createCell(row, columnCount++, record.getOutReachHead_name(), style);
+            createCell(row, columnCount++, record.getOutReachHead_Mob(), style);
+            createCell(row, columnCount++, record.getOutReach_name(), style);
+            createCell(row, columnCount++, record.getOutReach_Mob(), style);
 
         }
     }

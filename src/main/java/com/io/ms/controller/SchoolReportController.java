@@ -28,8 +28,8 @@ public class SchoolReportController {
     }
 
     @GetMapping("/Secured/MBP/School/Admin/Report1")
-    public ResponseEntity<?> generateReport1(HttpServletResponse response,
+    public void generateReport1(HttpServletResponse response,
                                              @RequestParam String state) throws IOException {
-        return schoolReportService.generateReport1(response,state);
+        schoolReportService.generateReport1(response,state);
     }
 }

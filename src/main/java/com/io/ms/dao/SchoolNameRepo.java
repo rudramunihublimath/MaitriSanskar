@@ -30,6 +30,9 @@ public interface SchoolNameRepo extends JpaRepository<SchoolNameRequest, Long> {
     @Query(value = "SELECT user_id FROM user_School_T WHERE school_id = :schoolId", nativeQuery = true)
     List<Long> selectRecord(Long schoolId);
 
+    @Query(value = "SELECT user_id FROM mbp.user_School_T WHERE user_nameOfTeam like 'OutReach%' and school_id = :schoolId", nativeQuery = true)
+    List<Long> selectRecord_OutReach(Long schoolId);
+
     @Query(value = "SELECT user_nameOfTeam FROM user_School_T WHERE school_id = :schoolId", nativeQuery = true)
     List<String> selectRecord2(Long schoolId);
 

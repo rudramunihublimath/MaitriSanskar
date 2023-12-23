@@ -30,4 +30,8 @@ public class SchoolAdminReport1 {
     String space3;
     String agreementCompleted;
     LocalDate agreementCompletedDate;
+    String outReachHead_name;
+    String outReachHead_Mob;
+    String outReach_name;
+    String outReach_Mob;
 }
