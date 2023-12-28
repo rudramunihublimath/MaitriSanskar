@@ -26,7 +26,7 @@ public class SchoolPOCRequest {
     @Column(name = "teacherlastname", nullable = false, length = 30)
     private String teacherlastname;
 
-    @Column(name = "designation", nullable = false, length = 30)
+    @Column(name = "designation", nullable = false, length = 40)
     private String designation;
 
     @Column(name = "contactNum1", nullable = true, length = 20)

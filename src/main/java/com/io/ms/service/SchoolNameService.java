@@ -47,11 +47,11 @@ public class SchoolNameService {
         Map<String,Object> map = new HashMap<>();
 
         // validated if emailID already present
-        if(schoolNameRepo.existsByEmail(payload.getEmail())){
+        /*if(schoolNameRepo.existsByEmail(payload.getEmail())){
             map.put("message","School is already registered with this email");
             map.put("status",false);
             return ResponseEntity.badRequest().body(map);
-        }
+        } */
 
         SchoolNameRequest sc=new SchoolNameRequest();
         sc.setName(payload.getName());
@@ -88,14 +88,6 @@ public class SchoolNameService {
 
     public SchoolNameRequest registerSchoolName_V2(SchoolNameRequest payload) throws Exception {
         Map<String,Object> map = new HashMap<>();
-
-        // validated if emailID already present
-        if(schoolNameRepo.existsByEmail(payload.getEmail())){
-            //map.put("message","School is already registered with this email");
-            //map.put("status",false);
-            //return ResponseEntity.badRequest().body(map);
-            throw new Exception("School is already registered with this email");
-        }
 
         SchoolNameRequest sc=new SchoolNameRequest();
         sc.setName(payload.getName());

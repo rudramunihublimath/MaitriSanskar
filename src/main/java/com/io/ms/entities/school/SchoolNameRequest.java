@@ -36,7 +36,7 @@ public class SchoolNameRequest {
     private String password;
 
     @Email
-    @Column(name = "email", unique = true, nullable = false, length = 50)
+    @Column(name = "email", nullable = false, length = 50)
     private String email;
 
     @Column(name = "country", nullable = false, length = 15)
