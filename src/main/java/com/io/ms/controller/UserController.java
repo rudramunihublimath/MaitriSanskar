@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 public class UserController {
@@ -59,7 +61,7 @@ public class UserController {
     @PatchMapping(value="/Secured/MBP/Login/Image",consumes = {"multipart/form-data" })
     @Operation(summary = "Upload a single File")
     public ResponseEntity<?> uploadImage(@RequestParam Long userId,
-                                         @RequestParam("file") MultipartFile uploadfile)  {
+                                         @RequestParam("file") MultipartFile uploadfile) throws IOException {
         return loginService.uploadImage(userId,uploadfile);
     }
 

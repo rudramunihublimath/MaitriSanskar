@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -463,42 +464,58 @@ public class UserService {
     }
 
 
-    public ResponseEntity<?> uploadImage(Long userId,MultipartFile uploadfile) {
+    public ResponseEntity<?> uploadImage(Long userId,MultipartFile file) throws IOException {
         Map<String,Object> map = new HashMap<>();
 
-        if (uploadfile.isEmpty()) {
+        if (file.isEmpty()) {
             return new ResponseEntity<String>("please select a file!", HttpStatus.OK);
         }
 
-        try {
-            List<MultipartFile> files = Arrays.asList(uploadfile);
-            for (MultipartFile file : files) {
-                if (file.isEmpty()) {
-                    continue;
-                }
-                byte[] bytes = file.getBytes();
-                Path path = Paths.get(AppConstants.IMAGE_PATH + file.getOriginalFilename());
-                Files.write(path, bytes);
-                //saveMetaData(file);
-                Optional<User> userOptional = userRepo.findById(userId);
-                if (userOptional.isEmpty()) {
-                    map.put("message","User details not found !! "+userId);
-                    map.put("status",false);
-                    return ResponseEntity.badRequest().body(map);
-                }
-                User user = userOptional.get();
-                //create dir if not present with common path +// userId
-                String fullPath1=AppConstants.IMAGE_PATH+file.getOriginalFilename();
-                user.setImageName(fullPath1);
-                userRepo.save(user);
-                map.put("message","Image uploaded");
-                map.put("status",true);
-            }
+        Optional<User> userOptional = userRepo.findById(userId);
+        if (userOptional.isEmpty()) {
+            map.put("message","User details not found !! "+userId);
+            map.put("status",false);
+            return ResponseEntity.badRequest().body(map);
+        }
+        User user = userOptional.get();
+        // Check if the directory exists, and create it if not
+        String state = user.getState();
+        String city  = user.getCity();
+        String directoryPath = AppConstants.IMAGE_PATH + state + "/" + city + "/" + userId;
+        String fullPath=directoryPath+"/"+ file.getOriginalFilename();
 
-        } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        boolean flag = createDirectory(directoryPath);
+        if(flag) {
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(fullPath);
+            Files.write(path, bytes);
+
+            // Store to DB :
+            user.setImageName(fullPath);
+            userRepo.save(user);
+            map.put("message","Image uploaded");
+            map.put("status",true);
         }
         return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+    private boolean createDirectory(String directoryPath) {
+        File directory = new File(directoryPath);
+
+        // Check if the directory already exists
+        if (directory.exists()) {
+            //System.out.println("Directory already exists: " + directoryPath);
+            return true;
+        }
+
+        // Create the directory and its parent directories if they don't exist
+        if (directory.mkdirs()) {
+            //System.out.println("Directory created successfully: " + directoryPath);
+            return true;
+        } else {
+            //System.err.println("Failed to create directory: " + directoryPath);
+            return false;
+        }
     }
 
     public ResponseEntity<?> removeImage(Long userId) {
@@ -518,4 +535,6 @@ public class UserService {
         map.put("status",true);
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
+
+
 }

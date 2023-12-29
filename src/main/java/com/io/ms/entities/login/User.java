@@ -124,7 +124,7 @@ public class User implements UserDetails {
   //@Column(name = "schoolAllocated", length = 300)
   //private List<Long> schoolAllocated;
 
-  @Column(name = "imageName", length = 100)
+  @Column(name = "imageName", length = 200)
   private String imageName;
 
   @Enumerated(EnumType.STRING)
